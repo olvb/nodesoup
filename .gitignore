@@ -1,0 +1,6 @@
+*.png
+!samples/*.png
+.d
+.vscode
+obj
+nodesoup
