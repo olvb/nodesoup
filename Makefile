@@ -1,50 +1,52 @@
 DEBUG = 0
 
+PACKAGE = nodesoup
+
 CXX = g++
 LD = $(CXX)
-CXXFLAGS = -std=c++14 -Wall -Wextra -Wno-sign-compare
-CXXFLAGS += `pkg-config --cflags cairo`
-LDFLAGS = -lm
-LDFLAGS += `pkg-config --libs cairo`
+CXXFLAGS = -std=c++14 -Wall -Wextra -Wno-sign-compare -Iinclude/$(PACKAGE)
+LDFLAGS =
 
-CXXFLAGS_DBG = -g -DDEBUG
-CXXFLAGS_RLS = -O2 -DNDEBUG
 ifeq ($(DEBUG), 1)
-	CXXFLAGS += $(CXXFLAGS_DBG)
+CXXFLAGS += -g -DDEBUG
 else
-	CXXFLAGS += $(CXXFLAGS_RLS)
+CXXFLAGS += -O2 -DNDEBUG
 endif
 
-TARGET = nodesoup
+LIB_CXXFLAGS = -fPIC
+LIB_LDFLAGS = -lm -fPIC
 
-SRCDIR = src
-INCLUDEDIR = include
-OBJDIR = obj
-DEPDIR = .d
+DEMO_CXXFLAGS = $(shell pkg-config --cflags cairo)
+DEMO_LDFLAGS = $(shell pkg-config --libs cairo) -Llib -lnodesoup
 
-SRCS = $(wildcard $(SRCDIR)/*.cpp)
-OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
-DEPS = $(patsubst $(SRCDIR)/%.cpp, $(DEPDIR)/%.d, $(SRCS))
+HEADERS = $(wildcard include/*.hpp)
+LIB_HEADERS = $(wildcard src/*.hpp)
+LIB_SRCS = $(wildcard src/*.cpp)
+LIB_OBJS = $(patsubst src/%.cpp, obj/%.o, $(LIB_SRCS))
+LIB_TARGET = lib/lib$(PACKAGE).so
+DEMO_SRCS = $(wildcard demo/*.cpp)
+DEMO_TARGETS = $(patsubst demo/%.cpp, bin/%, $(DEMO_SRCS))
+DEPS = $(wildcard .d/*.d)
 
-.PHONY: all clean
+.PHONY: all clean depend
 
-all: $(TARGET)
+all: $(LIB_TARGET) $(DEMO_TARGETS)
 
-$(TARGET): $(OBJS)
-	@mkdir -p $(@D)
-	$(LD) -o $@ $(OBJS) $(LDFLAGS)
+$(LIB_TARGET): $(LIB_OBJS)
+	@mkdir -p $(@D) .d
+	$(LD) -shared -MMD -MF .d/$(PACKAGE).d $^ -o $@ $(LDFLAGS) $(LIB_LDFLAGS)
 
-$(OBJDIR)/%.o:
-	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-$(DEPDIR)/%.d: $(SRCDIR)/%.cpp
-	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -MM -MT $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $<) $< -MF $@
+$(DEMO_TARGETS): $(LIB_TARGET)
+	@mkdir -p $(@D) .d
+	$(CXX) $(CXXFLAGS) $(DEMO_CXXFLAGS) -MMD -MF .d/$(@F).d -o $@ $(DEMO_SRCS) $(LDFLAGS) $(DEMO_LDFLAGS)
 
 ifneq ($(MAKECMDGOALS), clean)
-    -include $(DEPS)
+-include $(DEPS)
 endif
 
+obj/%.o: src/%.cpp
+	@mkdir -p $(@D) .d
+	$(CXX) $(CXXFLAGS) $(LIB_CXXFLAGS) -MMD -MF .d/$*.d -c -o $@ $<
+
 clean:
-	$(RM) $(OBJS) $(DEPS) $(TARGET) .deps
+	$(RM) $(LIB_OBJS) $(LIB_TARGET) $(DEMO_TARGETS) $(DEPS)

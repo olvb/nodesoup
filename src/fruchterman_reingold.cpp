@@ -2,6 +2,7 @@
 
 #include "fruchterman_reingold.hpp"
 
+namespace nodesoup {
 using namespace std;
 
 void FruchtermanReingold::operator()(vector<Point2D>& positions) {
@@ -72,4 +73,5 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
         temp_ *= 0.95;
     }
     /* Puis maintien a un niveau bas */
+}
 }

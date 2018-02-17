@@ -1,9 +1,10 @@
 #include "kamada_kawai.hpp"
-#include "floyd_warshall.hpp"
 
 #include <cassert>
+#include <limits>
 #include <cmath>
 
+namespace nodesoup {
 using namespace std;
 
 // epsilon in original algorithm , can be adjusted
@@ -12,7 +13,7 @@ using namespace std;
 
 KamadaKawai::KamadaKawai(adj_list_type& g, unsigned int width, unsigned int height) :
     g_(g) {
-    vector<vector<unsigned int>> distances = floyd_warshall(g_);
+    vector<vector<unsigned int>> distances = floyd_warshall_(g_);
 
     unsigned int biggest_distance = 0;
     for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
@@ -47,6 +48,29 @@ KamadaKawai::KamadaKawai(adj_list_type& g, unsigned int width, unsigned int heig
 
         springs_.push_back(v_springs);
     }
+}
+
+vector<vector<unsigned int>> KamadaKawai::floyd_warshall_(adj_list_type& g) {
+    unsigned int infinity = numeric_limits<unsigned int>::max() / 2;
+    vector<vector<unsigned int>> distances(g.size(), vector<unsigned int>(g.size(), infinity));
+
+    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+        distances[v_id][v_id] = 0;
+        for (vertex_id_type adj_id : g[v_id]) {
+            distances[v_id][adj_id] = 1;
+            distances[adj_id][v_id] = 1;
+        }
+    }
+
+    for (unsigned int k = 0; k < g.size(); k++) {
+        for (unsigned int i = 0; i < g.size(); i++) {
+            for (unsigned int j = 0; j < g.size(); j++) {
+                distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
+            }
+        }
+    }
+
+    return distances;
 }
 
 /**
@@ -155,4 +179,5 @@ Point2D KamadaKawai::get_lesser_energy_position_for_vertex_(vertex_id_type v_id,
     position.y += (xy_energy * x_energy - xx_energy * y_energy) / denom;
 
     return position;
+}
 }

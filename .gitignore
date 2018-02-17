@@ -1,6 +1,7 @@
-*.png
-!samples/*.png
+obj
+bin
+lib
 .d
 .vscode
-obj
-nodesoup
+*.png
+dot

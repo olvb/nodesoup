@@ -5,6 +5,7 @@
 #include "geometry.hpp"
 #include "graph.hpp"
 
+namespace nodesoup {
 class FruchtermanReingold {
 public:
     FruchtermanReingold(adj_list_type& g) :
@@ -17,3 +18,4 @@ private:
     double temp_;
     std::vector<Vector2D> mvmts_;
 };
+}

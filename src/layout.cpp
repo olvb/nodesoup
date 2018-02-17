@@ -1,9 +1,9 @@
 #include <cmath>
-#include <iostream>
 #include <limits>
 
 #include "layout.hpp"
 
+namespace nodesoup {
 using namespace std;
 
 void circle(adj_list_type& g, vector<Point2D>& positions) {
@@ -55,4 +55,5 @@ void center_and_scale(adj_list_type& g, unsigned int width, unsigned int height,
         positions[v_id].x = positions[v_id].x * scale - x_offset;
         positions[v_id].y = positions[v_id].y * scale - y_offset;
     }
+}
 }
