@@ -1,6 +1,8 @@
 DEBUG = 0
 
 PACKAGE = nodesoup
+LIB_TARGET = lib/$(PACKAGE)/lib$(PACKAGE).so
+DEMO_TARGETS = bin/dot2png
 
 CXX = g++
 LD = $(CXX)
@@ -14,31 +16,34 @@ CXXFLAGS += -O2 -DNDEBUG
 endif
 
 LIB_CXXFLAGS = -fPIC
-LIB_LDFLAGS = -lm -fPIC
+LIB_LDFLAGS = -lm
 
 DEMO_CXXFLAGS = $(shell pkg-config --cflags cairo)
-DEMO_LDFLAGS = $(shell pkg-config --libs cairo) -Llib -lnodesoup
+DEMO_LDFLAGS = $(shell pkg-config --libs cairo)
 
 HEADERS = $(wildcard include/*.hpp)
 LIB_HEADERS = $(wildcard src/*.hpp)
 LIB_SRCS = $(wildcard src/*.cpp)
 LIB_OBJS = $(patsubst src/%.cpp, obj/%.o, $(LIB_SRCS))
-LIB_TARGET = lib/lib$(PACKAGE).so
 DEMO_SRCS = $(wildcard demo/*.cpp)
-DEMO_TARGETS = $(patsubst demo/%.cpp, bin/%, $(DEMO_SRCS))
 DEPS = $(wildcard .d/*.d)
 
-.PHONY: all clean depend
+.PHONY: all lib demo clean
 
-all: $(LIB_TARGET) $(DEMO_TARGETS)
+all: lib demo
+
+lib: $(LIB_TARGET)
+
+demo: $(DEMO_TARGETS)
 
 $(LIB_TARGET): $(LIB_OBJS)
-	@mkdir -p $(@D) .d
-	$(LD) -shared -MMD -MF .d/$(PACKAGE).d $^ -o $@ $(LDFLAGS) $(LIB_LDFLAGS)
+	@mkdir -p $(@D)
+	$(LD) -shared $^ -o $@ $(LDFLAGS) $(LIB_LDFLAGS)
 
-$(DEMO_TARGETS): $(LIB_TARGET)
+$(DEMO_TARGETS): $(LIB_OBJS)
 	@mkdir -p $(@D) .d
-	$(CXX) $(CXXFLAGS) $(DEMO_CXXFLAGS) -MMD -MF .d/$(@F).d -o $@ $(DEMO_SRCS) $(LDFLAGS) $(DEMO_LDFLAGS)
+	@echo $(LIB_OBJS)
+	$(CXX) $(CXXFLAGS) $(DEMO_CXXFLAGS) -MMD -MF .d/$(@F).d -o $@ demo/$(@F).cpp $^ $(LDFLAGS) $(DEMO_LDFLAGS)
 
 ifneq ($(MAKECMDGOALS), clean)
 -include $(DEPS)
@@ -49,4 +54,4 @@ obj/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(LIB_CXXFLAGS) -MMD -MF .d/$*.d -c -o $@ $<
 
 clean:
-	$(RM) $(LIB_OBJS) $(LIB_TARGET) $(DEMO_TARGETS) $(DEPS)
+	$(RM) obj/* $(LIB_TARGET) $(DEMO_TARGETS) .d/*
