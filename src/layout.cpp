@@ -6,16 +6,16 @@
 namespace nodesoup {
 using namespace std;
 
-void circle(adj_list_type& g, vector<Point2D>& positions) {
-    double e = 2.0 * M_PI / g.size();
+void circle(const adj_list_type& g, vector<Point2D>& positions) {
+    double angle = 2.0 * M_PI / g.size();
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
-        positions[v_id].x = cos(v_id * e);
-        positions[v_id].y = sin(v_id * e);
+        positions[v_id].x = cos(v_id * angle);
+        positions[v_id].y = sin(v_id * angle);
     }
 }
 
 /* agrandir le graphe pour occuper tout l'espace de la fenetre */
-void center_and_scale(adj_list_type& g, unsigned int width, unsigned int height, vector<Point2D>& positions) {
+void center_and_scale(const adj_list_type& g, unsigned int width, unsigned int height, vector<Point2D>& positions) {
     double x_min = numeric_limits<double>::max();
     double x_max = numeric_limits<double>::lowest();
     double y_min = numeric_limits<double>::max();
@@ -46,14 +46,11 @@ void center_and_scale(adj_list_type& g, unsigned int width, unsigned int height,
     double y_scale = 0.9 * height / cur_height;
     double scale = x_scale < y_scale ? x_scale : y_scale;
 
-    double x_center = x_max + x_min;
-    double y_center = y_max + y_min;
-    double x_offset = x_center / 2 * scale;
-    double y_offset = y_center / 2 * scale;
+    Vector2D center = {x_max + x_min, y_max + y_min};
+    Vector2D offset = center / 2.0 * scale;
 
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
-        positions[v_id].x = positions[v_id].x * scale - x_offset;
-        positions[v_id].y = positions[v_id].y * scale - y_offset;
+        positions[v_id] = (Point2D) ((Vector2D) positions[v_id] * scale - offset);
     }
 }
 }

@@ -15,19 +15,20 @@ public:
         double strength;
     };
 
-    KamadaKawai(adj_list_type& g, unsigned int width, unsigned int height);
-    void operator()(std::vector<Point2D>& positions);
+    KamadaKawai(const adj_list_type& g, double k = 300.0, double energy_threshold = 1e-2);
+    void operator()(std::vector<Point2D>& positions) const;
 
 private:
-    adj_list_type& g_;
+    const adj_list_type& g_;
+    const double energy_threshold_;
     std::vector<std::vector<Spring>> springs_;
 
-    static std::vector<std::vector<unsigned int>> floyd_warshall_(adj_list_type& g);
+    static std::vector<std::vector<unsigned int>> floyd_warshall_(const adj_list_type& g);
     // p m
-    double get_max_vertex_energy_(std::vector<Point2D>& positions, vertex_id_type& max_energy_v_id);
+    double find_max_vertex_energy_(const std::vector<Point2D>& positions, vertex_id_type& max_energy_v_id) const;
     // delta m
-    double get_vertex_energy_(vertex_id_type v_id, std::vector<Point2D>& positions);
-    Point2D get_lesser_energy_position_for_vertex_(vertex_id_type v_id, std::vector<Point2D>& positions);
+    double compute_vertex_energy_(vertex_id_type v_id, const std::vector<Point2D>& positions) const;
+    Point2D compute_next_vertex_position_(vertex_id_type v_id, const std::vector<Point2D>& positions) const;
 };
 
 }

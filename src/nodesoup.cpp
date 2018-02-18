@@ -6,9 +6,9 @@
 namespace nodesoup {
 using namespace std;
 
-vector<Point2D> fruchterman_reingold(adj_list_type& g, unsigned int width, unsigned int height, unsigned int iters_count, iter_callback_type iter_cb) {
-    // Disposition initiale en cercle
+vector<Point2D> fruchterman_reingold(const adj_list_type& g, unsigned int width, unsigned int height, unsigned int iters_count, iter_callback_type iter_cb) {
     vector<Point2D> positions(g.size());
+    // Disposition initiale en cercle
     circle(g, positions);
 
     FruchtermanReingold fr(g);
@@ -25,13 +25,11 @@ vector<Point2D> fruchterman_reingold(adj_list_type& g, unsigned int width, unsig
     return positions;
 }
 
-vector<Point2D> kamada_kawai(adj_list_type& g, unsigned int width, unsigned int height) {
-    // Disposition initiale en cercle
+vector<Point2D> kamada_kawai(const adj_list_type& g, unsigned int width, unsigned int height) {
     vector<Point2D> positions(g.size());
+    // Disposition initiale en cercle
     circle(g, positions);
-
-    //center_and_scale(g, WIDTH, HEIGHT, positions);
-    KamadaKawai kk(g, width, height);
+    KamadaKawai kk(g);
     kk(positions);
     center_and_scale(g, width, height, positions);
 
