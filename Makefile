@@ -21,12 +21,11 @@ LIB_LDFLAGS = -lm
 DEMO_CXXFLAGS = $(shell pkg-config --cflags cairo)
 DEMO_LDFLAGS = $(shell pkg-config --libs cairo)
 
-HEADERS = $(wildcard include/*.hpp)
-LIB_HEADERS = $(wildcard src/*.hpp)
 LIB_SRCS = $(wildcard src/*.cpp)
-LIB_OBJS = $(patsubst src/%.cpp, obj/%.o, $(LIB_SRCS))
+LIB_OBJS = $(patsubst src/%.cpp, obj/lib/%.o, $(LIB_SRCS))
+LIB_DEPS = $(wildcard .d/*.d)
 DEMO_SRCS = $(wildcard demo/*.cpp)
-DEPS = $(wildcard .d/*.d)
+DEMO_DEPS = $(wildcard .d/*.d)
 
 .PHONY: all lib demo clean
 
@@ -40,18 +39,21 @@ $(LIB_TARGET): $(LIB_OBJS)
 	@mkdir -p $(@D)
 	$(LD) -shared $^ -o $@ $(LDFLAGS) $(LIB_LDFLAGS)
 
-$(DEMO_TARGETS): $(LIB_OBJS)
-	@mkdir -p $(@D) .d
-	@echo $(LIB_OBJS)
-	$(CXX) $(CXXFLAGS) $(DEMO_CXXFLAGS) -MMD -MF .d/$(@F).d -o $@ demo/$(@F).cpp $^ $(LDFLAGS) $(DEMO_LDFLAGS)
+bin/%: obj/demo/%.o $(LIB_OBJS)
+	$(LD) -o $@ $^ $(LDFLAGS) $(DEMO_LDFLAGS)
+
+obj/lib/%.o: src/%.cpp
+	@mkdir -p $(@D) .d/lib
+	$(CXX) $(CXXFLAGS) $(LIB_CXXFLAGS) -MMD -MF .d/lib/$*.d -c -o $@ $<
+
+obj/demo/%.o: demo/%.cpp
+	@mkdir -p $(@D) .d/demo
+	$(CXX) $(CXXFLAGS) $(DEMO_CXXFLAGS) -MMD -MF .d/demo/$*.d -c -o $@ $<
 
 ifneq ($(MAKECMDGOALS), clean)
--include $(DEPS)
+-include $(LIB_DEPS)
+-include $(DEMO_DEPS)
 endif
 
-obj/%.o: src/%.cpp
-	@mkdir -p $(@D) .d
-	$(CXX) $(CXXFLAGS) $(LIB_CXXFLAGS) -MMD -MF .d/$*.d -c -o $@ $<
-
 clean:
-	$(RM) obj/* $(LIB_TARGET) $(DEMO_TARGETS) .d/*
+	$(RM) lib/$(PACKAGE)/* bin/* obj/lib/* obj/demo/* .d/lib/* .d/demo/*
