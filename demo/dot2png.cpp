@@ -17,12 +17,13 @@ using std::string;
 using std::vector;
 using std::cerr;
 
-string read_string_from_file(string filename) {
+adj_list_type read_from_dot(string filename) {
     std::ifstream ifs(filename);
-    return string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-}
+    if (!ifs.good()) {
+        cerr << "Could not open file \"" << filename << "\"\n";
+        exit(EXIT_FAILURE);
+    }
 
-adj_list_type read_from_dot(string dot) {
     // retourne name sans le 1er caractere
     // ex: v20 -> 20
     auto name_to_vertex_id = [](string name) -> vertex_id_type {
@@ -35,8 +36,7 @@ adj_list_type read_from_dot(string dot) {
 
     adj_list_type g;
     string line;
-    std::istringstream iss(dot);
-    while (std::getline(iss, line)) {
+    while (std::getline(ifs, line)) {
         if (line[0] != 'v') {
             continue;
         }
@@ -97,7 +97,6 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
         cairo_fill(cr);
 
         for (auto adj_id : g[v_id]) {
-            // ne pas afficher 2 fois le meme edge
             if (adj_id < v_id) {
                 continue;
             }
@@ -109,7 +108,10 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
         }
     }
 
-    cairo_surface_write_to_png(surface, filename.c_str());
+    if (cairo_surface_write_to_png(surface, filename.c_str()) != CAIRO_STATUS_SUCCESS) {
+        cerr << "Could not write to file \"" << filename << "\"\n";
+        exit(EXIT_FAILURE);
+    }
 
     cairo_restore(cr);
     cairo_show_page(cr);
@@ -118,16 +120,16 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
 enum Method { fr, kk };
 
 void dot2png(string dot_filename, string png_filename, Method method, unsigned int width, unsigned int height) {
-    string dot = read_string_from_file(dot_filename);
-    adj_list_type g = read_from_dot(dot);
+    adj_list_type g = read_from_dot(dot_filename);
 
-    // TODO
-    // Diametres en fonction du degre
+    // Vertices diameters grow with degree
+    // TODO consider connectivity?
+    double base_diameter = 1.0;
     vector<double> diameters;
     diameters.reserve(g.size());
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
-        //positions.push_back(Point2D { random_number(-WIDTH / 2, WIDTH / 2), random_number(- HEIGHT / 2, HEIGHT / 2) });
-        diameters.push_back(2.0 + (g[v_id].size() / g.size()));
+        double diameter = base_diameter + (double) g[v_id].size();
+        diameters.push_back(diameter);
     }
 
     vector<Point2D> positions;
