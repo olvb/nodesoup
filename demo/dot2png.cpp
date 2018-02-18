@@ -12,9 +12,6 @@
 
 #include "nodesoup.hpp"
 
-#define WIDTH 1024
-#define HEIGHT 760
-
 using namespace nodesoup;
 using std::string;
 using std::vector;
@@ -79,14 +76,14 @@ adj_list_type read_from_dot(string dot) {
     return g;
 }
 
-void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& diameters, string filename) {
+void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& diameters, unsigned int width, unsigned int height, string filename) {
     // shift origin to 0, 0
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
-        positions[v_id].x += WIDTH / 2.0;
-        positions[v_id].y += HEIGHT / 2.0;
+        positions[v_id].x += width / 2.0;
+        positions[v_id].y += height / 2.0;
     }
 
-    cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, WIDTH, HEIGHT);
+    cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
     cairo_t* cr = cairo_create(surface);
 
     cairo_set_source_rgb(cr, 255.0, 255.0, 255.0);
@@ -120,7 +117,7 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
 
 enum Method { fr, kk };
 
-void dot2png(string dot_filename, string png_filename, Method method) {
+void dot2png(string dot_filename, string png_filename, Method method, unsigned int width, unsigned int height) {
     string dot = read_string_from_file(dot_filename);
     adj_list_type g = read_from_dot(dot);
 
@@ -143,11 +140,11 @@ void dot2png(string dot_filename, string png_filename, Method method) {
             output_graph(g, positions, diameters, str);
         }*/
 
-        positions = fruchterman_reingold(g, WIDTH, HEIGHT);
-        write_to_png(g, positions, diameters, png_filename);
+        positions = fruchterman_reingold(g, width, height);
+        write_to_png(g, positions, diameters, width, height, png_filename);
     } else {
-        positions = kamada_kawai(g, WIDTH, HEIGHT);
-        write_to_png(g, positions, diameters, png_filename);
+        positions = kamada_kawai(g, width, height);
+        write_to_png(g, positions, diameters, width, height, png_filename);
     }
 }
 
@@ -163,7 +160,7 @@ void print_usage_and_exit(string exec_name) {
 int main(int argc, char* argv[]) {
     Method method = fr;
     unsigned int width = 1024;
-    unsigned int height = 760;
+    unsigned int height = 768;
 
     char opt;
     while ((opt = getopt(argc, argv, "m:w:h:")) != -1) {
@@ -203,5 +200,5 @@ int main(int argc, char* argv[]) {
 
     char *dot_filename = argv[optind];
     char *png_filename = argv[optind + 1];
-    dot2png(dot_filename, png_filename, method);
+    dot2png(dot_filename, png_filename, method, width, height);
 }
