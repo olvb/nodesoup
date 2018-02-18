@@ -23,9 +23,9 @@ DEMO_LDFLAGS = $(shell pkg-config --libs cairo)
 
 LIB_SRCS = $(wildcard src/*.cpp)
 LIB_OBJS = $(patsubst src/%.cpp, obj/lib/%.o, $(LIB_SRCS))
-LIB_DEPS = $(wildcard .d/*.d)
+LIB_DEPS = $(wildcard .d/lib/*.d)
 DEMO_SRCS = $(wildcard demo/*.cpp)
-DEMO_DEPS = $(wildcard .d/*.d)
+DEMO_DEPS = $(wildcard .d/demo/*.d)
 
 .PHONY: all lib demo clean
 
