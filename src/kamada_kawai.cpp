@@ -1,10 +1,10 @@
 #include "kamada_kawai.hpp"
 
-#include <cassert>
-#include <limits>
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <iostream>
+#include <limits>
 
 namespace nodesoup {
 using namespace std;
@@ -50,7 +50,7 @@ KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_thresho
 }
 
 vector<vector<unsigned int>> KamadaKawai::floyd_warshall_(const adj_list_type& g) {
-    // build adjacency matrix (inifinity = no edge, 1 = edge)
+    // build adjacency matrix (infinity = no edge, 1 = edge)
     unsigned int infinity = numeric_limits<unsigned int>::max() / 2;
     vector<vector<unsigned int>> distances(g.size(), vector<unsigned int>(g.size(), infinity));
 

@@ -14,8 +14,8 @@ void circle(const adj_list_type& g, vector<Point2D>& positions) {
     }
 }
 
-/* agrandir le graphe pour occuper tout l'espace de la fenetre */
 void center_and_scale(const adj_list_type& g, unsigned int width, unsigned int height, vector<Point2D>& positions) {
+    // find current dimensions
     double x_min = numeric_limits<double>::max();
     double x_max = numeric_limits<double>::lowest();
     double y_min = numeric_limits<double>::max();
@@ -40,17 +40,16 @@ void center_and_scale(const adj_list_type& g, unsigned int width, unsigned int h
     double cur_width = x_max - x_min;
     double cur_height = y_max - y_min;
 
-    // Calcul et application de l'echelle
-    // 0.9: on se laisse un peu de marge
-    double x_scale = 0.9 * width / cur_width;
-    double y_scale = 0.9 * height / cur_height;
-    double scale = x_scale < y_scale ? x_scale : y_scale;
+    // compute scale factor (0.9: keep some margin)
+    double x_scale = width / cur_width;
+    double y_scale = height / cur_height;
+    double scale = 0.9 * (x_scale < y_scale ? x_scale : y_scale);
 
-    Vector2D center = {x_max + x_min, y_max + y_min};
+    // compute offset and apply it to every position
+    Vector2D center = { x_max + x_min, y_max + y_min };
     Vector2D offset = center / 2.0 * scale;
-
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
-        positions[v_id] = (Point2D) ((Vector2D) positions[v_id] * scale - offset);
+        positions[v_id] = (Point2D)((Vector2D) positions[v_id] * scale - offset);
     }
 }
 }

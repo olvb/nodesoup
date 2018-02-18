@@ -8,7 +8,7 @@ using namespace std;
 
 vector<Point2D> fruchterman_reingold(const adj_list_type& g, unsigned int width, unsigned int height, unsigned int iters_count, iter_callback_type iter_cb) {
     vector<Point2D> positions(g.size());
-    // Disposition initiale en cercle
+    // Initial layout on a circle
     circle(g, positions);
 
     FruchtermanReingold fr(g);
@@ -27,7 +27,7 @@ vector<Point2D> fruchterman_reingold(const adj_list_type& g, unsigned int width,
 
 vector<Point2D> kamada_kawai(const adj_list_type& g, unsigned int width, unsigned int height) {
     vector<Point2D> positions(g.size());
-    // Disposition initiale en cercle
+    // Initial layout on a circle
     circle(g, positions);
     KamadaKawai kk(g);
     kk(positions);

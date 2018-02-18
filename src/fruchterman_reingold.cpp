@@ -1,5 +1,5 @@
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 #include "fruchterman_reingold.hpp"
 
@@ -10,7 +10,7 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
     Vector2D zero = { 0.0, 0.0 };
     fill(mvmts_.begin(), mvmts_.end(), zero);
 
-    // Force de repulsion entre chaque paire de vertices
+    // Repulsion force between each vertice pair
     for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
         for (vertex_id_type other_id = v_id + 1; other_id < g_.size(); other_id++) {
             if (v_id == other_id) {
@@ -24,11 +24,8 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
             mvmts_[v_id] += delta / distance * repulsion;
             mvmts_[other_id] -= delta / distance * repulsion;
         }
-    }
 
-    // Force d'attraction entre chaque edge
-    // (TODO deplacer dans la boucle precedente?)
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
+        // Attraction force between each edge
         for (vertex_id_type adj_id : g_[v_id]) {
             if (adj_id > v_id) {
                 continue;
@@ -43,7 +40,7 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
         }
     }
 
-    /* Mouvement max limite par la temperature */
+    // Max movement capped by current temperature
     for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
         double mvmt_norm = mvmts_[v_id].norm();
         if (mvmt_norm == 0.0) {
@@ -55,11 +52,9 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
         positions[v_id] += capped_mvmt;
     }
 
-    // cool
-    /* Descente rapide de la temperature */
+    // Cool down fast until we reach 1.0, then stay at low temperature
     if (temp_ > 1.0) {
         temp_ *= 0.95;
     }
-    /* Puis maintien a un niveau bas */
 }
 }
