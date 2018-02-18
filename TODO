@@ -1,0 +1,5 @@
+* fix FR coeffs
+* rotate layout to maximize canvas occupation
+* determine vertices diameters based on connectivity rather than degree
+* use std::set in dot reader to support more vertex labels
+* write README with examples
