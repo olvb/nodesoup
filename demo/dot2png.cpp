@@ -1,7 +1,7 @@
 #include <cairo.h>
+#include <getopt.h>
 #include <cmath>
 #include <cassert>
-#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -18,6 +18,7 @@
 using namespace nodesoup;
 using std::string;
 using std::vector;
+using std::cerr;
 
 string read_string_from_file(string filename) {
     std::ifstream ifs(filename);
@@ -117,8 +118,10 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
     cairo_show_page(cr);
 }
 
-void layout(string filename, string method) {
-    string dot = read_string_from_file(filename);
+enum Method { fr, kk };
+
+void dot2png(string dot_filename, string png_filename, Method method) {
+    string dot = read_string_from_file(dot_filename);
     adj_list_type g = read_from_dot(dot);
 
     // TODO
@@ -130,11 +133,8 @@ void layout(string filename, string method) {
         diameters.push_back(2.0 + (g[v_id].size() / g.size()));
     }
 
-    // Disposition initiale en cercle
-    vector<Point2D> positions(g.size());
-    //circle(g, positions);
-
-    if (method == "fr") {
+    vector<Point2D> positions;
+    if (method == Method::fr) {
         // Fruchterman Reingold en n iterations
         // TODO verifier combien d'iterations sont utiles
         /*auto cb = [] (vector<Point2D> positions, unsigned int iter) {
@@ -144,40 +144,64 @@ void layout(string filename, string method) {
         }*/
 
         positions = fruchterman_reingold(g, WIDTH, HEIGHT);
-        write_to_png(g, positions, diameters, "out.png");
+        write_to_png(g, positions, diameters, png_filename);
     } else {
         positions = kamada_kawai(g, WIDTH, HEIGHT);
-        write_to_png(g, positions, diameters, "out.png");
+        write_to_png(g, positions, diameters, png_filename);
     }
 }
 
-void print_usage_and_exit(string binname) {
-    std::cerr << "usage: " << binname << " [--gen vertices_count | --layout graph.dot --method (fr|kk)" << std::endl;
-    exit(1);
+void print_usage_and_exit(string exec_name) {
+    cerr << "Usage: " <<  exec_name << " [options] <in.dot> <out.png>\n";
+    cerr << "Options:\n";
+    cerr << "  -m <method>\tLayout method to use [fr|kk, default: fr]\n";
+    cerr << "  -w <width>\tCanvas width in pixels [default: 1024]\n";
+    cerr << "  -h <height>\tCanvas height in pixels [default: 760]\n";
+    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 3 || (string(argv[1]) != "--gen" && string(argv[1]) != "--layout")) {
+    Method method = fr;
+    unsigned int width = 1024;
+    unsigned int height = 760;
+
+    char opt;
+    while ((opt = getopt(argc, argv, "m:w:h:")) != -1) {
+        switch (opt) {
+        case 'm':
+            if (string(optarg) == "fr") {
+                method = fr;
+            } else if (string(optarg) == "kk") {
+                method = kk;
+            } else {
+                cerr << "Invalid method: \"" << optarg << "\"\n";
+                print_usage_and_exit(argv[0]);
+            }
+            break;
+        case 'w':
+            width = atoi(optarg);
+            if (width < 1) {
+                cerr << "Invalid width: \"" << width << "\"\n";
+                print_usage_and_exit(argv[0]);
+            }
+            break;
+        case 'h':
+            height = atoi(optarg);
+            if (height < 1) {
+                cerr << "Invalid height: \"" << height << "\"\n";
+                print_usage_and_exit(argv[0]);
+            }
+            break;
+        default:
+            print_usage_and_exit(argv[0]);
+        }
+    }
+
+    if (argc - optind != 2) {
         print_usage_and_exit(argv[0]);
     }
 
-    if (string(argv[1]) == "--gen") {
-        if (argc != 3) {
-            print_usage_and_exit(argv[0]);
-        }
-
-        unsigned int vertices_count = atoi(argv[2]);
-        //gen(vertices_count);
-    } else {
-        if (argc != 5 || (string(argv[3]) != "--method")) {
-            print_usage_and_exit(argv[0]);
-        }
-
-        string filename = argv[2];
-        if (string(argv[4]) != "fr" && string(argv[4]) != "kk") {
-            print_usage_and_exit(argv[0]);
-        }
-
-        layout(filename, string(argv[4]));
-    }
+    char *dot_filename = argv[optind];
+    char *png_filename = argv[optind + 1];
+    dot2png(dot_filename, png_filename, method);
 }
