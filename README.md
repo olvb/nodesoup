@@ -21,30 +21,75 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 
 | Fruchterman-Reingold | Kamada-Kawai        | Graphviz            |
 | :------------------: | :-----------------: | :-----------------: |
-| [![][fr_thumb]][fr_thumb]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
+| [![][fr_thumb]][fr]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
 | x.xxs                | x.xxs               | x.xxs               |
 
-[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_fr.png
 [fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_fr.png
-[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_kk.png
+[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_fr.png
 [kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_kk.png
-[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_gv.png
+[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_kk.png
 [gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_gv.png
+[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_gv.png
 
 *Dot file from [graphs.grevian.org](http://graphs.grevian.org/example)*
 
-### Dense graph
+### Small dense graph
 
+| Fruchterman-Reingold | Kamada-Kawai        | Graphviz            |
+| :------------------: | :-----------------: | :-----------------: |
+| [![][fr_thumb]][fr]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
+| x.xxs                | x.xxs               | x.xxs               |
+
+[fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/small_dense_fr.png
+[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_fr.png
+[kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/small_dense_kk.png
+[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_kk.png
+[gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/small_dense_gv.png
+[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_gv.png
+
+*Dot file from [graphs.grevian.org](http://graphs.grevian.org/example)*
 
 ### Bin tree
 
+| Fruchterman-Reingold | Kamada-Kawai        | Graphviz            |
+| :------------------: | :-----------------: | :-----------------: |
+| [![][fr_thumb]][fr]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
+| x.xxs                | x.xxs               | x.xxs               |
+
+[fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/bin_tree_fr.png
+[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/bin_tree_fr.png
+[kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/bin_tree_kk.png
+[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/bin_tree_kk.png
+[gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/bin_tree_gv.png
+[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/bin_tree_gv.png
+
 ### Quad tree
+| Fruchterman-Reingold | Kamada-Kawai        | Graphviz            |
+| :------------------: | :-----------------: | :-----------------: |
+| [![][fr_thumb]][fr]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
+| x.xxs                | x.xxs               | x.xxs               |
+
+[fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/quad_tree_fr.png
+[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_fr.png
+[kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/quad_tree_kk.png
+[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_kk.png
+[gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/quad_tree_gv.png
+[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_gv.png
 
 ### Large random graph
 
+| Fruchterman-Reingold | Kamada-Kawai        | Graphviz            |
+| :------------------: | :-----------------: | :-----------------: |
+| [![][fr_thumb]][fr]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
+| x.xxs                | x.xxs               | x.xxs               |
+
+[fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_random_fr.png
+[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_random_fr.png
+[kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_random_kk.png
+[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_random_kk.png
+[gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_random_gv.png
+[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_random_gv.png
+
 ## Caveats
 
-Twiddling with factors
-Reducing an octree node means folding all its leaves onto iself. It is not possible to "partially" fold a node and preserve some of its leaves. As a consequence, it may not be possible to fill the palette with the exact maximum number of colors desired. This is especially blatant when setting a maximum number of colors lower than 8, which will always yield a palette of only 1 color.
-
-Limiting the octree depth can give a performance gain (neglectable when using dither), but also impact the chosen palette color. On some images (such as our second sample image), setting a lower depth may give results more visually pleasing.
+TODO Twiddling with factors
