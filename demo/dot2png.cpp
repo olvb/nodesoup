@@ -1,11 +1,11 @@
+#include <algorithm>
 #include <cairo.h>
-#include <getopt.h>
-#include <cmath>
 #include <cassert>
+#include <cmath>
 #include <fstream>
+#include <getopt.h>
 #include <iostream>
 #include <sstream>
-#include <algorithm>
 #include <streambuf>
 #include <string>
 #include <vector>
@@ -13,10 +13,11 @@
 #include "nodesoup.hpp"
 
 using namespace nodesoup;
+using std::cerr;
 using std::string;
 using std::vector;
-using std::cerr;
 
+/** Ready simple-enough dot files (one edge per line, vertex labels "v0", "v1", etc) */
 adj_list_type read_from_dot(string filename) {
     std::ifstream ifs(filename);
     if (!ifs.good()) {
@@ -24,8 +25,6 @@ adj_list_type read_from_dot(string filename) {
         exit(EXIT_FAILURE);
     }
 
-    // retourne name sans le 1er caractere
-    // ex: v20 -> 20
     auto name_to_vertex_id = [](string name) -> vertex_id_type {
         assert(name[0] == 'v');
         std::istringstream iss(name.substr(1));
@@ -117,9 +116,18 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
     cairo_show_page(cr);
 }
 
-enum Method { fr, kk };
+enum Method { fr,
+    kk };
 
-void dot2png(string dot_filename, string png_filename, Method method, unsigned int width, unsigned int height) {
+void dot2png(
+    string dot_filename,
+    string png_filename,
+    Method method,
+    unsigned int width,
+    unsigned int height,
+    double k,
+    double energy_threshold,
+    int iters_count) {
     adj_list_type g = read_from_dot(dot_filename);
 
     // Vertices diameters grow with degree
@@ -141,31 +149,42 @@ void dot2png(string dot_filename, string png_filename, Method method, unsigned i
             sprintf(str, "out_%03d.png", j);
             output_graph(g, positions, diameters, str);
         }*/
-
-        positions = fruchterman_reingold(g, width, height);
+        if (k == -1.0) {
+            k = 10.0;
+        }
+        positions = fruchterman_reingold(g, width, height, iters_count, k);
         write_to_png(g, positions, diameters, width, height, png_filename);
     } else {
-        positions = kamada_kawai(g, width, height);
+        if (k == -1.0) {
+            k = 300.0;
+        }
+        positions = kamada_kawai(g, width, height, k, energy_threshold);
         write_to_png(g, positions, diameters, width, height, png_filename);
     }
 }
 
 void print_usage_and_exit(string exec_name) {
-    cerr << "Usage: " <<  exec_name << " [options] <in.dot> <out.png>\n";
+    cerr << "Usage: " << exec_name << " [options] <in.dot> <out.png>\n";
     cerr << "Options:\n";
-    cerr << "  -m <method>\tLayout method to use [fr|kk, default: fr]\n";
-    cerr << "  -w <width>\tCanvas width in pixels [default: 1024]\n";
-    cerr << "  -h <height>\tCanvas height in pixels [default: 760]\n";
+    cerr << "  -m <method>\t\tLayout method to use between Fruchterman Reingold and Kamada Kawai [fr|kk, default: fr]\n";
+    cerr << "  -w <width>\t\tCanvas width in pixels [default: 1024]\n";
+    cerr << "  -h <height>\t\tCanvas height in pixels [default: 760]\n";
+    cerr << "  -k <strength>\t\tStrength factor [default: 10 for fr, 300 for kk]\n";
+    cerr << "  -i <iterations>\tNumber of iterations for fr [default: 100]\n";
+    cerr << "  -e <epsilon>\t\tEnergy threshold for kk [default: 1e-2]\n";
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char* argv[]) {
     Method method = fr;
-    unsigned int width = 1024;
-    unsigned int height = 768;
+    int width = 1024;
+    int height = 768;
+    double k = -1.0;
+    double energy_threshold = 1e-2;
+    int iters_count = 100;
 
     char opt;
-    while ((opt = getopt(argc, argv, "m:w:h:")) != -1) {
+    while ((opt = getopt(argc, argv, "m:w:h:k:e:i:")) != -1) {
         switch (opt) {
         case 'm':
             if (string(optarg) == "fr") {
@@ -179,15 +198,36 @@ int main(int argc, char* argv[]) {
             break;
         case 'w':
             width = atoi(optarg);
-            if (width < 1) {
+            if (width <= 0) {
                 cerr << "Invalid width: \"" << width << "\"\n";
                 print_usage_and_exit(argv[0]);
             }
             break;
         case 'h':
             height = atoi(optarg);
-            if (height < 1) {
+            if (height <= 0) {
                 cerr << "Invalid height: \"" << height << "\"\n";
+                print_usage_and_exit(argv[0]);
+            }
+            break;
+        case 'k':
+            k = atof(optarg);
+            if (k <= 0.0) {
+                cerr << "Invalid k value: \"" << k << "\"\n";
+                print_usage_and_exit(argv[0]);
+            }
+            break;
+        case 'i':
+            iters_count = atoi(optarg);
+            if (iters_count <= 0) {
+                cerr << "Invalid iterations: \"" << iters_count << "\"\n";
+                print_usage_and_exit(argv[0]);
+            }
+            break;
+        case 'e':
+            energy_threshold = atof(optarg);
+            if (energy_threshold <= 0) {
+                cerr << "Invalid energy threshold: \"" << energy_threshold << "\"\n";
                 print_usage_and_exit(argv[0]);
             }
             break;
@@ -200,7 +240,7 @@ int main(int argc, char* argv[]) {
         print_usage_and_exit(argv[0]);
     }
 
-    char *dot_filename = argv[optind];
-    char *png_filename = argv[optind + 1];
-    dot2png(dot_filename, png_filename, method, width, height);
+    char* dot_filename = argv[optind];
+    char* png_filename = argv[optind + 1];
+    dot2png(dot_filename, png_filename, method, width, height, k, energy_threshold, iters_count);
 }

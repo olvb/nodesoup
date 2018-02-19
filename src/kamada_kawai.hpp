@@ -23,12 +23,11 @@ private:
     const double energy_threshold_;
     std::vector<std::vector<Spring>> springs_;
 
-    static std::vector<std::vector<unsigned int>> floyd_warshall_(const adj_list_type& g);
+    static std::vector<std::vector<vertex_id_type>> floyd_warshall_(const adj_list_type& g);
     // p m
     double find_max_vertex_energy_(const std::vector<Point2D>& positions, vertex_id_type& max_energy_v_id) const;
     // delta m
     double compute_vertex_energy_(vertex_id_type v_id, const std::vector<Point2D>& positions) const;
     Point2D compute_next_vertex_position_(vertex_id_type v_id, const std::vector<Point2D>& positions) const;
 };
-
 }

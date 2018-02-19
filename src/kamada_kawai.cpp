@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <iostream>
 #include <limits>
 
 namespace nodesoup {
@@ -11,7 +10,7 @@ using namespace std;
 
 KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_threshold) :
     g_(g), energy_threshold_(energy_threshold) {
-    vector<vector<unsigned int>> distances = floyd_warshall_(g_);
+    vector<vector<vertex_id_type>> distances = floyd_warshall_(g_);
 
     // find biggest distance
     unsigned int biggest_distance = 0;
@@ -29,10 +28,10 @@ KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_thresho
     double length = 1.0 / biggest_distance;
 
     // init springs lengths and strengths matrices
-    for (vertex_id_type v_id = 0; v_id < g_.size(); ++v_id) {
+    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
         vector<Spring> v_springs;
 
-        for (vertex_id_type other_id = 0; other_id < g_.size(); ++other_id) {
+        for (vertex_id_type other_id = 0; other_id < g_.size(); other_id++) {
             Spring spring;
             if (v_id == other_id) {
                 spring.length = 0.0;
@@ -49,10 +48,10 @@ KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_thresho
     }
 }
 
-vector<vector<unsigned int>> KamadaKawai::floyd_warshall_(const adj_list_type& g) {
+vector<vector<vertex_id_type>> KamadaKawai::floyd_warshall_(const adj_list_type& g) {
     // build adjacency matrix (infinity = no edge, 1 = edge)
     unsigned int infinity = numeric_limits<unsigned int>::max() / 2;
-    vector<vector<unsigned int>> distances(g.size(), vector<unsigned int>(g.size(), infinity));
+    vector<vector<vertex_id_type>> distances(g.size(), vector<vertex_id_type>(g.size(), infinity));
 
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
         distances[v_id][v_id] = 0;
@@ -65,9 +64,9 @@ vector<vector<unsigned int>> KamadaKawai::floyd_warshall_(const adj_list_type& g
     }
 
     // floyd warshall itself, find length of shortest path for each pair of vertices
-    for (unsigned int k = 0; k < g.size(); k++) {
-        for (unsigned int i = 0; i < g.size(); i++) {
-            for (unsigned int j = 0; j < g.size(); j++) {
+    for (vertex_id_type k = 0; k < g.size(); k++) {
+        for (vertex_id_type i = 0; i < g.size(); i++) {
+            for (vertex_id_type j = 0; j < g.size(); j++) {
                 distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
             }
         }
@@ -144,7 +143,7 @@ Point2D KamadaKawai::compute_next_vertex_position_(vertex_id_type v_id, const ve
     double xx_energy = 0.0, xy_energy = 0.0, yx_energy = 0.0, yy_energy = 0.0;
     double x_energy = 0.0, y_energy = 0.0;
 
-    for (vertex_id_type other_id = 0; other_id < g_.size(); ++other_id) {
+    for (vertex_id_type other_id = 0; other_id < g_.size(); other_id++) {
         if (v_id == other_id) {
             continue;
         }
