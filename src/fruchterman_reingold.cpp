@@ -24,6 +24,10 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
 
             Vector2D delta = positions[v_id] - positions[other_id];
             double distance = delta.norm();
+            if (distance > 1000.0) {
+                continue;
+            }
+
             double repulsion = k_squared_ / distance;
 
             mvmts_[v_id] += delta / distance * repulsion;
@@ -48,7 +52,8 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
     // Max movement capped by current temperature
     for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
         double mvmt_norm = mvmts_[v_id].norm();
-        if (mvmt_norm == 0.0) {
+        // < 1.0: not worth computing
+        if (mvmt_norm < 1.0) {
             continue;
         }
         double capped_mvmt_norm = min(mvmt_norm, temp_);
