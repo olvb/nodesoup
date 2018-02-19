@@ -19,39 +19,22 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 
 ### K6 graph
 
-| Fruchterman-Reingold | Kamada-Kawai | Graphviz |
-| :------------------: | :----------: | :------: |
-| [![][night_crop]][night] | [![][night_256_crop]][night_256] | [![][night_256_d_crop]][night_256_d] | [![][night_imgk_crop]][night_imgk] |
-| 1.20s                | 1.20s        | 1.20s    |
+| Fruchterman-Reingold | Kamada-Kawai        | Graphviz            |
+| :------------------: | :-----------------: | :-----------------: |
+| [![][fr_thumb]][fr_thumb]  | [![][kk_thumb]][kk] | [![][gv_thumb]][gv] |
+| x.xxs                | x.xxs               | x.xxs               |
 
-[night_crop]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/graph.png
-[night_256_crop]: https://raw.githubusercontent.com/ovbb/colorcrush/master/samples/nightshot_256_cropped.png
-[night_256_d_crop]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/nightshot_256_d_cropped.png
-[night_imgk_crop]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/nightshot_imgk_cropped.png
-[night]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/nightshot.png
-[night_256]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/nightshot_256.png
-[night_256_d]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/nightshot_256_d.png
-[night_imgk]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/nightshot_imgk.png
+[fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_fr.png
+[fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_fr.png
+[kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_kk.png
+[kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_kk.png
+[gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_gv.png
+[gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_gv.png
+
+*Dot file from [graphs.grevian.org](http://graphs.grevian.org/example)*
 
 ### Dense graph
 
-| Original | 256 colors | 256 colors dithered | ImageMagick |
-| :------: | :--------: | :-----------------: | :---------: |
-| [![][art_crop]][art] | [![][art_256_crop]][art_256] | [![][art_256_d_crop]][art_256_d] | [![][art_imgk_crop]][art_imgk] |
-| 454 kB   | 89 kB      | 130 kB              | 195 kB      |
-
-[art_crop]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_cropped.png
-[art_256_crop]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_256_cropped.png
-[art_256_d_crop]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_256_d_cropped.png
-[art_imgk_crop]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_imgk_cropped.png
-[art]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial.png
-[art_256]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_256.png
-[art_256_d]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_256_d.png
-[art_imgk]: https://raw.githubusercontent.com/olivierbbb/colorcrush/master/samples/artificial_imgk.png
-
-*ImageMagick command: `convert in.png -colors 256 png8:out.png`*
-
-*Sample images from [imagecompression.info](https://imagecompression.info/test_images/)*
 
 ### Bin tree
 
