@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cairo.h>
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <fstream>
 #include <getopt.h>
@@ -13,9 +14,7 @@
 #include "nodesoup.hpp"
 
 using namespace nodesoup;
-using std::cerr;
-using std::string;
-using std::vector;
+using namespace std;
 
 /** Ready simple-enough dot files (one edge per line, vertex labels "v0", "v1", etc) */
 adj_list_type read_from_dot(string filename) {
@@ -119,7 +118,7 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
 enum Method { fr,
     kk };
 
-void dot2png(
+void dot_to_png(
     string dot_filename,
     string png_filename,
     Method method,
@@ -132,15 +131,19 @@ void dot2png(
 
     // Vertices diameters grow with degree
     // TODO consider connectivity?
-    double base_diameter = 1.0;
+    double base_diameter = 2.0;
     vector<double> diameters;
     diameters.reserve(g.size());
     for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
-        double diameter = base_diameter + (double) g[v_id].size();
+        double diameter = base_diameter + 3.0 * log10((double) g[v_id].size());
         diameters.push_back(diameter);
     }
 
     vector<Point2D> positions;
+
+    chrono::time_point<chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
+
     if (method == Method::fr) {
         // Fruchterman Reingold en n iterations
         // TODO verifier combien d'iterations sont utiles
@@ -150,17 +153,21 @@ void dot2png(
             output_graph(g, positions, diameters, str);
         }*/
         if (k == -1.0) {
-            k = 10.0;
+            k = 15.0;
         }
         positions = fruchterman_reingold(g, width, height, iters_count, k);
-        write_to_png(g, positions, diameters, width, height, png_filename);
     } else {
         if (k == -1.0) {
             k = 300.0;
         }
         positions = kamada_kawai(g, width, height, k, energy_threshold);
-        write_to_png(g, positions, diameters, width, height, png_filename);
     }
+
+    end = chrono::system_clock::now();
+    unsigned int ms = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    cout << "layout computed in " << ms << "ms" << endl;
+
+    write_to_png(g, positions, diameters, width, height, png_filename);
 }
 
 void print_usage_and_exit(string exec_name) {
@@ -181,7 +188,7 @@ int main(int argc, char* argv[]) {
     int height = 768;
     double k = -1.0;
     double energy_threshold = 1e-2;
-    int iters_count = 100;
+    int iters_count = 300;
 
     char opt;
     while ((opt = getopt(argc, argv, "m:w:h:k:e:i:")) != -1) {
@@ -242,5 +249,5 @@ int main(int argc, char* argv[]) {
 
     char* dot_filename = argv[optind];
     char* png_filename = argv[optind + 1];
-    dot2png(dot_filename, png_filename, method, width, height, k, energy_threshold, iters_count);
+    dot_to_png(dot_filename, png_filename, method, width, height, k, energy_threshold, iters_count);
 }

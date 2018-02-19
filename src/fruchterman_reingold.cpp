@@ -9,46 +9,7 @@ using namespace std;
 
 FruchtermanReingold::FruchtermanReingold(const adj_list_type& g, double k) :
     g_(g), k_(k), k_squared_(k * k),
-    temp_(10 * sqrt(g.size())), mvmts_(g_.size()) {
-    build_edges_();
-}
-
-void FruchtermanReingold::build_edges_() {
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
-        for (vertex_id_type adj_id : g_[v_id]) {
-            if (adj_id > v_id) {
-                continue;
-            }
-
-            edges_.push_back({ v_id, adj_id });
-        }
-    }
-}
-
-bool FruchtermanReingold::has_intersecting_edges_(vector<Point2D>& positions) {
-    auto ccw = [](Point2D a, Point2D b, Point2D c) -> bool {
-        return ((c.y - a.y) * (b.x - a.x)) > ((b.y - a.y) * (c.x - a.x));
-    };
-
-    for (size_t i = 0; i < edges_.size(); i++) {
-        pair<vertex_id_type, vertex_id_type> first_edge = edges_[i];
-        for (size_t j = i + 1; j < edges_.size(); j++) {
-            pair<vertex_id_type, vertex_id_type> sec_edge = edges_[j];
-
-            Point2D first_from = positions[first_edge.first];
-            Point2D first_to = positions[first_edge.second];
-            Point2D sec_from = positions[sec_edge.first];
-            Point2D sec_to = positions[sec_edge.second];
-
-            if (ccw(first_from, sec_from, sec_to) != ccw(first_to, sec_from, sec_to) &&
-                ccw(first_from, first_to, sec_from) != ccw(first_from, first_to, sec_to)) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
+    temp_(10 * sqrt(g.size())), mvmts_(g_.size()) {}
 
 void FruchtermanReingold::operator()(vector<Point2D>& positions) {
     Vector2D zero = { 0.0, 0.0 };
@@ -96,13 +57,11 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
         positions[v_id] += capped_mvmt;
     }
 
-    // Cool down fast until we reach 1.0, then stay at low temperature
+    // Cool down fast until we reach 1.5, then stay at low temperature
     if (temp_ > 1.5) {
         temp_ *= 0.85;
     } else {
-        temp_ = 2.0;
+        temp_ = 1.5;
     }
-
-    cout << (has_intersecting_edges_(positions) ? "true" : "false") << endl;
 }
 }

@@ -4,4 +4,4 @@ lib
 .d
 .vscode
 *.png
-dot
+!samples/*.png
