@@ -22,8 +22,9 @@ vector<Point2D> fruchterman_reingold(
         fr(positions);
 
         if (iter_cb != nullptr) {
-            center_and_scale(g, width, height, positions);
-            iter_cb(positions, i);
+            vector<Point2D> scaled_positions = positions;
+            center_and_scale(g, width, height, scaled_positions);
+            iter_cb(scaled_positions, i);
         }
     }
 
@@ -46,4 +47,15 @@ vector<Point2D> kamada_kawai(
 
     return positions;
 }
+
+vector<double> size_radiuses(const adj_list_type& g, double base_radius, double k) {
+    vector<double> radiuses;
+    radiuses.reserve(g.size());
+    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+        double radius = base_radius + log2(k * (double) g[v_id].size() / g.size());
+        radiuses.push_back(radius);
+    }
+    return radiuses;
+}
+
 }
