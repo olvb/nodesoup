@@ -25,13 +25,13 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 | x.xxs                     | x.xxs                     | x.xxs                     |
 
 [g1_fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_fr.png
-[g1_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_fr.png
+[g1_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_fr.gif
 [g1_kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_kk.png
 [g1_kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_kk.png
 [g1_gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/k6_gv.png
 [g1_gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/k6_gv.png
 
-*Dot file from [graphs.grevian.org](http://graphs.grevian.org/example)*
+*DOT file from [graphs.grevian.org](http://graphs.grevian.org/example)*
 
 ### Small dense graph
 
@@ -41,15 +41,15 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 | x.xxs                     | x.xxs                     | x.xxs                     |
 
 [g2_fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/small_dense_fr.png
-[g2_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_fr.png
+[g2_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_fr.gif
 [g2_kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/small_dense_kk.png
 [g2_kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_kk.png
 [g2_gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/small_dense_gv.png
 [g2_gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/small_dense_gv.png
 
-*Dot file from [graphs.grevian.org](http://graphs.grevian.org/example)*
+*DOT file from [graphs.grevian.org](http://graphs.grevian.org/example)*
 
-### Bin tree
+### Binary tree
 
 | Fruchterman-Reingold      | Kamada-Kawai              | Graphviz                  |
 | :-----------------------: | :-----------------------: | :-----------------------: |
@@ -57,7 +57,7 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 | x.xxs                     | x.xxs                     | x.xxs                     |
 
 [g3_fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/bin_tree_fr.png
-[g3_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/bin_tree_fr.png
+[g3_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/bin_tree_fr.gif
 [g3_kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/bin_tree_kk.png
 [g3_kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/bin_tree_kk.png
 [g3_gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/bin_tree_gv.png
@@ -70,25 +70,27 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 | x.xxs                     | x.xxs                     | x.xxs                     |
 
 [g4_fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/quad_tree_fr.png
-[g4_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_fr.png
+[g4_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_fr.gif
 [g4_kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/quad_tree_kk.png
 [g4_kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_kk.png
 [g4_gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/quad_tree_gv.png
 [g4_gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/quad_tree_gv.png
 
-### Large random graph
+### Large graph with disconnected components
 
-| Fruchterman-Reingold      | Kamada-Kawai              | Graphviz                  |
-| :-----------------------: | :-----------------------: | :-----------------------: |
-| [![][g5_fr_thumb]][g5_fr] | [![][g5_kk_thumb]][g5_kk] | [![][g5_gv_thumb]][g5_gv] |
-| x.xxs                     | x.xxs                     | x.xxs                     |
+| Fruchterman-Reingold      | Graphviz                  |
+| :-----------------------: | :-----------------------: |
+| [![][g5_fr_thumb]][g5_fr] | [![][g5_gv_thumb]][g5_gv] |
+| x.xxs                     | x.xxs                     |
 
-[g5_fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_random_fr.png
-[g5_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_random_fr.png
-[g5_kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_random_kk.png
-[g5_kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_random_kk.png
-[g5_gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_random_gv.png
-[g5_gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_random_gv.png
+[g5_fr]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_disconnected_fr.png
+[g5_fr_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_disconnected_fr.gif
+[g5_kk]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_disconnected_kk.png
+[g5_kk_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_disconnected_kk.png
+[g5_gv]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/large_disconnected_gv.png
+[g5_gv_thumb]: https://raw.githubusercontent.com/olvb/nodesoup/master/samples/thumbs/large_disconnected_gv.png
+
+*GML file from [gephi](https://github.com/gephi/gephi/wiki/Datasets) based on dataset by M. E. J. Newman*
 
 ## Caveats
 
