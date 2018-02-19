@@ -5,3 +5,4 @@ lib
 .vscode
 *.png
 !samples/*.png
+!samples/thumbs/*.png
