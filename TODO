@@ -1,5 +1,6 @@
-* fix FR coeffs
 * rotate layout to maximize canvas occupation
+* detect edge intersection and use it to control temperature in FR
 * determine vertices diameters based on connectivity rather than degree
 * use std::set in dot reader to support more vertex labels
 * write README with examples
+* include graph generator
