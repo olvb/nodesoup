@@ -40,6 +40,7 @@ $(LIB_TARGET): $(LIB_OBJS)
 	$(LD) -shared $^ -o $@ $(LDFLAGS) $(LIB_LDFLAGS)
 
 bin/%: obj/demo/%.o $(LIB_OBJS)
+	@mkdir -p $(@D)
 	$(LD) -o $@ $^ $(LDFLAGS) $(DEMO_LDFLAGS)
 
 obj/lib/%.o: src/%.cpp
