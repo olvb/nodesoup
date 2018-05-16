@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "geometry.hpp"
+#include "algebra.hpp"
 
 namespace nodesoup {
 

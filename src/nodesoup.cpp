@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "nodesoup.hpp"
 #include "fruchterman_reingold.hpp"
 #include "kamada_kawai.hpp"
@@ -7,12 +9,12 @@ namespace nodesoup {
 using namespace std;
 
 vector<Point2D> fruchterman_reingold(
-    const adj_list_type& g,
+    const adj_list_t& g,
     unsigned int width,
     unsigned int height,
     unsigned int iters_count,
     double k,
-    iter_callback_type iter_cb) {
+    iter_callback_t iter_cb) {
     vector<Point2D> positions(g.size());
     // Initial layout on a circle
     circle(g, positions);
@@ -33,7 +35,7 @@ vector<Point2D> fruchterman_reingold(
 }
 
 vector<Point2D> kamada_kawai(
-    const adj_list_type& g,
+    const adj_list_t& g,
     unsigned int width,
     unsigned int height,
     double k,
@@ -48,10 +50,10 @@ vector<Point2D> kamada_kawai(
     return positions;
 }
 
-vector<double> size_radiuses(const adj_list_type& g, double base_radius, double k) {
+vector<double> size_radiuses(const adj_list_t& g, double base_radius, double k) {
     vector<double> radiuses;
     radiuses.reserve(g.size());
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         double radius = base_radius + log2(k * (double) g[v_id].size() / g.size());
         radiuses.push_back(radius);
     }

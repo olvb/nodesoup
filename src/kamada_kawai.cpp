@@ -1,21 +1,23 @@
-#include "kamada_kawai.hpp"
-
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <limits>
 
+#include "kamada_kawai.hpp"
+#include "algebra.hpp"
+
 namespace nodesoup {
+
 using namespace std;
 
-KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_threshold) :
+KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold) :
     g_(g), energy_threshold_(energy_threshold) {
-    vector<vector<vertex_id_type>> distances = floyd_warshall_(g_);
+    vector<vector<vertex_id_t>> distances = floyd_warshall_(g_);
 
     // find biggest distance
     unsigned int biggest_distance = 0;
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
-        for (vertex_id_type other_id = 0; other_id < g_.size(); other_id++) {
+    for (vertex_id_t v_id = 0; v_id < g_.size(); v_id++) {
+        for (vertex_id_t other_id = 0; other_id < g_.size(); other_id++) {
             if (distances[v_id][other_id] > biggest_distance) {
                 biggest_distance = distances[v_id][other_id];
             }
@@ -28,10 +30,10 @@ KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_thresho
     double length = 1.0 / biggest_distance;
 
     // init springs lengths and strengths matrices
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g_.size(); v_id++) {
         vector<Spring> v_springs;
 
-        for (vertex_id_type other_id = 0; other_id < g_.size(); other_id++) {
+        for (vertex_id_t other_id = 0; other_id < g_.size(); other_id++) {
             Spring spring;
             if (v_id == other_id) {
                 spring.length = 0.0;
@@ -48,14 +50,14 @@ KamadaKawai::KamadaKawai(const adj_list_type& g, double k, double energy_thresho
     }
 }
 
-vector<vector<vertex_id_type>> KamadaKawai::floyd_warshall_(const adj_list_type& g) {
+vector<vector<vertex_id_t>> KamadaKawai::floyd_warshall_(const adj_list_t& g) {
     // build adjacency matrix (infinity = no edge, 1 = edge)
     unsigned int infinity = numeric_limits<unsigned int>::max() / 2;
-    vector<vector<vertex_id_type>> distances(g.size(), vector<vertex_id_type>(g.size(), infinity));
+    vector<vector<vertex_id_t>> distances(g.size(), vector<vertex_id_t>(g.size(), infinity));
 
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         distances[v_id][v_id] = 0;
-        for (vertex_id_type adj_id : g[v_id]) {
+        for (vertex_id_t adj_id : g[v_id]) {
             if (adj_id > v_id) {
                 distances[v_id][adj_id] = 1;
                 distances[adj_id][v_id] = 1;
@@ -64,9 +66,9 @@ vector<vector<vertex_id_type>> KamadaKawai::floyd_warshall_(const adj_list_type&
     }
 
     // floyd warshall itself, find length of shortest path for each pair of vertices
-    for (vertex_id_type k = 0; k < g.size(); k++) {
-        for (vertex_id_type i = 0; i < g.size(); i++) {
-            for (vertex_id_type j = 0; j < g.size(); j++) {
+    for (vertex_id_t k = 0; k < g.size(); k++) {
+        for (vertex_id_t i = 0; i < g.size(); i++) {
+            for (vertex_id_t j = 0; j < g.size(); j++) {
                 distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
             }
         }
@@ -82,7 +84,7 @@ Reduce the energy of the next vertex with most energy until all the vertices hav
 a energy below energy_threshold
 */
 void KamadaKawai::operator()(vector<Point2D>& positions) const {
-    vertex_id_type v_id;
+    vertex_id_t v_id;
     while (find_max_vertex_energy_(positions, v_id) > energy_threshold_) {
         // move vertex step by step until its energy goes below threshold
         // (apparently this is equivalent to the newton raphson method)
@@ -98,9 +100,9 @@ void KamadaKawai::operator()(vector<Point2D>& positions) const {
 Find @p max_energy_v_id with the most potential energy and @return its energy
 // https://gist.github.com/terakun/b7eff90c889c1485898ec9256ca9f91d
 */
-double KamadaKawai::find_max_vertex_energy_(const vector<Point2D>& positions, vertex_id_type& max_energy_v_id) const {
+double KamadaKawai::find_max_vertex_energy_(const vector<Point2D>& positions, vertex_id_t& max_energy_v_id) const {
     double max_energy = -1.0;
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g_.size(); v_id++) {
         double energy = compute_vertex_energy_(v_id, positions);
         if (energy > max_energy) {
             max_energy_v_id = v_id;
@@ -112,11 +114,11 @@ double KamadaKawai::find_max_vertex_energy_(const vector<Point2D>& positions, ve
 }
 
 /** @return the potential energies of springs between @p v_id and all other vertices */
-double KamadaKawai::compute_vertex_energy_(vertex_id_type v_id, const vector<Point2D>& positions) const {
+double KamadaKawai::compute_vertex_energy_(vertex_id_t v_id, const vector<Point2D>& positions) const {
     double x_energy = 0.0;
     double y_energy = 0.0;
 
-    for (vertex_id_type other_id = 0; other_id < g_.size(); other_id++) {
+    for (vertex_id_t other_id = 0; other_id < g_.size(); other_id++) {
         if (v_id == other_id) {
             continue;
         }
@@ -139,11 +141,11 @@ caused by its position.
 The position's delta depends on K (TODO bigger K = faster?).
 This is the complicated part of the algorithm.
 */
-Point2D KamadaKawai::compute_next_vertex_position_(vertex_id_type v_id, const vector<Point2D>& positions) const {
+Point2D KamadaKawai::compute_next_vertex_position_(vertex_id_t v_id, const vector<Point2D>& positions) const {
     double xx_energy = 0.0, xy_energy = 0.0, yx_energy = 0.0, yy_energy = 0.0;
     double x_energy = 0.0, y_energy = 0.0;
 
-    for (vertex_id_type other_id = 0; other_id < g_.size(); other_id++) {
+    for (vertex_id_t other_id = 0; other_id < g_.size(); other_id++) {
         if (v_id == other_id) {
             continue;
         }

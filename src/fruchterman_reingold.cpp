@@ -3,11 +3,12 @@
 #include <iostream>
 
 #include "fruchterman_reingold.hpp"
+#include "algebra.hpp"
 
 namespace nodesoup {
 using namespace std;
 
-FruchtermanReingold::FruchtermanReingold(const adj_list_type& g, double k) :
+FruchtermanReingold::FruchtermanReingold(const adj_list_t& g, double k) :
     g_(g), k_(k), k_squared_(k * k),
     temp_(10 * sqrt(g.size())), mvmts_(g_.size()) {}
 
@@ -15,9 +16,9 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
     Vector2D zero = { 0.0, 0.0 };
     fill(mvmts_.begin(), mvmts_.end(), zero);
 
-    // Repulsion force between each vertice pair
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
-        for (vertex_id_type other_id = v_id + 1; other_id < g_.size(); other_id++) {
+    // Repulsion force between vertice pairs
+    for (vertex_id_t v_id = 0; v_id < g_.size(); v_id++) {
+        for (vertex_id_t other_id = v_id + 1; other_id < g_.size(); other_id++) {
             if (v_id == other_id) {
                 continue;
             }
@@ -34,8 +35,8 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
             mvmts_[other_id] -= delta / distance * repulsion;
         }
 
-        // Attraction force between each edge
-        for (vertex_id_type adj_id : g_[v_id]) {
+        // Attraction force between edges
+        for (vertex_id_t adj_id : g_[v_id]) {
             if (adj_id > v_id) {
                 continue;
             }
@@ -50,7 +51,7 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
     }
 
     // Max movement capped by current temperature
-    for (vertex_id_type v_id = 0; v_id < g_.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g_.size(); v_id++) {
         double mvmt_norm = mvmts_[v_id].norm();
         // < 1.0: not worth computing
         if (mvmt_norm < 1.0) {

@@ -3,6 +3,3 @@ bin
 lib
 .d
 .vscode
-*.png
-!samples/*.png
-!samples/thumbs/*.png

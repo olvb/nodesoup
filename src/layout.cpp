@@ -1,27 +1,28 @@
 #include <cmath>
 #include <limits>
 
+#include "algebra.hpp"
 #include "layout.hpp"
 
 namespace nodesoup {
 using namespace std;
 
-void circle(const adj_list_type& g, vector<Point2D>& positions) {
+void circle(const adj_list_t& g, vector<Point2D>& positions) {
     double angle = 2.0 * M_PI / g.size();
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         positions[v_id].x = cos(v_id * angle);
         positions[v_id].y = sin(v_id * angle);
     }
 }
 
-void center_and_scale(const adj_list_type& g, unsigned int width, unsigned int height, vector<Point2D>& positions) {
+void center_and_scale(const adj_list_t& g, unsigned int width, unsigned int height, vector<Point2D>& positions) {
     // find current dimensions
     double x_min = numeric_limits<double>::max();
     double x_max = numeric_limits<double>::lowest();
     double y_min = numeric_limits<double>::max();
     double y_max = numeric_limits<double>::lowest();
 
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         if (positions[v_id].x < x_min) {
             x_min = positions[v_id].x;
         }
@@ -48,7 +49,7 @@ void center_and_scale(const adj_list_type& g, unsigned int width, unsigned int h
     // compute offset and apply it to every position
     Vector2D center = { x_max + x_min, y_max + y_min };
     Vector2D offset = center / 2.0 * scale;
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         positions[v_id] = (Point2D)((Vector2D) positions[v_id] * scale - offset);
     }
 }

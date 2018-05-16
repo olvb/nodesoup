@@ -1,13 +1,13 @@
 DEBUG = 0
 
 PACKAGE = nodesoup
-LIB_TARGET = lib/$(PACKAGE)/lib$(PACKAGE).so
+LIB_TARGET = lib/lib$(PACKAGE).so
 DEMO_TARGETS = bin/dot2png
 
 CXX = g++
 LD = $(CXX)
-CXXFLAGS = -std=c++14 -Wall -Wextra -Wno-sign-compare -Iinclude/$(PACKAGE)
-LDFLAGS =
+CXXFLAGS = -std=c++14 -Wall -Wextra -Wno-sign-compare -Iinclude/
+LDFLAGS = -lm
 
 ifeq ($(DEBUG), 1)
 CXXFLAGS += -g -DDEBUG
@@ -35,7 +35,7 @@ lib: $(LIB_TARGET)
 
 demo: $(DEMO_TARGETS)
 
-$(LIB_TARGET): $(LIB_OBJS)
+lib/lib$(PACKAGE).so: $(LIB_OBJS)
 	@mkdir -p $(@D)
 	$(LD) -shared $^ -o $@ $(LDFLAGS) $(LIB_LDFLAGS)
 
@@ -47,7 +47,7 @@ obj/lib/%.o: src/%.cpp
 	@mkdir -p $(@D) .d/lib
 	$(CXX) $(CXXFLAGS) $(LIB_CXXFLAGS) -MMD -MF .d/lib/$*.d -c -o $@ $<
 
-obj/demo/%.o: demo/%.cpp
+obj/demo/%.o: demo/%.cpp $(LIB_OBJS)
 	@mkdir -p $(@D) .d/demo
 	$(CXX) $(CXXFLAGS) $(DEMO_CXXFLAGS) -MMD -MF .d/demo/$*.d -c -o $@ $<
 
@@ -57,4 +57,4 @@ ifneq ($(MAKECMDGOALS), clean)
 endif
 
 clean:
-	$(RM) lib/$(PACKAGE)/* bin/* obj/lib/* obj/demo/* .d/lib/* .d/demo/*
+	$(RM) lib/* bin/* obj/lib/* obj/demo/* .d/lib/* .d/demo/*

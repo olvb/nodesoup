@@ -18,22 +18,22 @@ using namespace nodesoup;
 using namespace std;
 
 /** Read not-too-complicated dot files */
-adj_list_type read_from_dot(string filename) {
+adj_list_t read_from_dot(string filename) {
     std::ifstream ifs(filename);
     if (!ifs.good()) {
         cerr << "Could not open file \"" << filename << "\"\n";
         exit(EXIT_FAILURE);
     }
 
-    adj_list_type g;
-    unordered_map<string, vertex_id_type> names;
+    adj_list_t g;
+    unordered_map<string, vertex_id_t> names;
 
-    auto name_to_vertex_id = [&g, &names](string name) -> vertex_id_type {
+    auto name_to_vertex_id = [&g, &names](string name) -> vertex_id_t {
         if (name[name.size() - 1] == ';') {
             name.erase(name.end() - 1, name.end());
         }
 
-        vertex_id_type v_id;
+        vertex_id_t v_id;
         auto it = names.find(name);
         if (it != names.end()) {
             return (*it).second;
@@ -59,7 +59,7 @@ adj_list_type read_from_dot(string filename) {
         iss >> name >> edge_sign >> adj_name;
 
         // add vertex if new
-        vertex_id_type v_id = name_to_vertex_id(name);
+        vertex_id_t v_id = name_to_vertex_id(name);
 
         assert(edge_sign == "--" || edge_sign.size() == 0);
         if (edge_sign != "--") {
@@ -67,7 +67,7 @@ adj_list_type read_from_dot(string filename) {
         }
 
         // add adjacent vertex if new
-        vertex_id_type adj_id = name_to_vertex_id(adj_name);
+        vertex_id_t adj_id = name_to_vertex_id(adj_name);
 
         // add edge if new
         if (find(g[v_id].begin(), g[v_id].end(), adj_id) == g[v_id].end()) {
@@ -78,9 +78,9 @@ adj_list_type read_from_dot(string filename) {
     return g;
 }
 
-void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& radiuses, unsigned int width, unsigned int height, string filename) {
+void write_to_png(adj_list_t& g, vector<Point2D>& positions, vector<double>& radiuses, unsigned int width, unsigned int height, string filename) {
     // shift origin to 0, 0
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         positions[v_id].x += width / 2.0;
         positions[v_id].y += height / 2.0;
     }
@@ -93,7 +93,7 @@ void write_to_png(adj_list_type& g, vector<Point2D>& positions, vector<double>& 
     cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
 
     cairo_set_line_width(cr, 1.0);
-    for (vertex_id_type v_id = 0; v_id < g.size(); v_id++) {
+    for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         Point2D v_pos = positions[v_id];
         cairo_arc(cr, v_pos.x, v_pos.y, radiuses[v_id], 0.0, 2.0 * M_PI);
         cairo_fill(cr);
@@ -132,7 +132,7 @@ void dot_to_png(
     double energy_threshold,
     int iters_count,
     bool animated) {
-    adj_list_type g = read_from_dot(dot_filename);
+    adj_list_t g = read_from_dot(dot_filename);
 
     vector<Point2D> positions;
     vector<double> radiuses = size_radiuses(g);
@@ -141,7 +141,7 @@ void dot_to_png(
 
     // Fruchterman-Reingold
     if (method == Method::fr) {
-        iter_callback_type cb = nullptr;
+        iter_callback_t cback = nullptr;
         char* frame_filename = nullptr;
         string frame_filename_format;
 
@@ -155,7 +155,7 @@ void dot_to_png(
             }
             frame_filename = new char[frame_filename_format.size()];
 
-            cb = [&g, &radiuses, width, height, iters_count, frame_filename, &frame_filename_format] (vector<Point2D> positions, unsigned int iter) {
+            cback = [&g, &radiuses, width, height, iters_count, frame_filename, &frame_filename_format] (vector<Point2D> positions, unsigned int iter) {
                 if (iter % 2 != 0 && iter != 0 && iter != iters_count - 1) {
                     return;
                 }
@@ -169,7 +169,7 @@ void dot_to_png(
         }
 
         start = chrono::system_clock::now();
-        positions = fruchterman_reingold(g, width, height, iters_count, k, cb);
+        positions = fruchterman_reingold(g, width, height, iters_count, k, cback);
         end = chrono::system_clock::now();
 
         if (animated) {
@@ -195,7 +195,7 @@ void dot_to_png(
     cout << "layout computed in " << ms << "ms" << endl;
 }
 
-void print_usage_and_exit(string exec_name) {
+void usage(string exec_name) {
     cerr << "Usage: " << exec_name << " [options] <in.dot> <out.png>\n";
     cerr << "Options:\n";
     cerr << "  -m <method>\t\tLayout method to use between Fruchterman Reingold and Kamada Kawai [fr|kk, default: fr]\n";
@@ -205,7 +205,6 @@ void print_usage_and_exit(string exec_name) {
     cerr << "  -i <iterations>\tNumber of iterations for fr [default: 100]\n";
     cerr << "  -e <epsilon>\t\tEnergy threshold for kk [default: 1e-2]\n";
     cerr << "  -a\t\t\tOutput all intermediary frames for fr [default: false]\n";
-    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char* argv[]) {
@@ -227,54 +226,62 @@ int main(int argc, char* argv[]) {
                 method = kk;
             } else {
                 cerr << "Invalid method: \"" << optarg << "\"\n";
-                print_usage_and_exit(argv[0]);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
             }
             break;
         case 'w':
             width = atoi(optarg);
             if (width <= 0) {
                 cerr << "Invalid width: \"" << width << "\"\n";
-                print_usage_and_exit(argv[0]);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
             }
             break;
         case 'h':
             height = atoi(optarg);
             if (height <= 0) {
                 cerr << "Invalid height: \"" << height << "\"\n";
-                print_usage_and_exit(argv[0]);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
             }
             break;
         case 'k':
             k = atof(optarg);
             if (k <= 0.0) {
                 cerr << "Invalid k value: \"" << k << "\"\n";
-                print_usage_and_exit(argv[0]);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
             }
             break;
         case 'i':
             iters_count = atoi(optarg);
             if (iters_count <= 0) {
                 cerr << "Invalid iterations: \"" << iters_count << "\"\n";
-                print_usage_and_exit(argv[0]);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
             }
             break;
         case 'e':
             energy_threshold = atof(optarg);
             if (energy_threshold <= 0) {
                 cerr << "Invalid energy threshold: \"" << energy_threshold << "\"\n";
-                print_usage_and_exit(argv[0]);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
             }
             break;
         case 'a':
             animated = true;
             break;
         default:
-            print_usage_and_exit(argv[0]);
+            usage(argv[0]);
+            exit(EXIT_FAILURE);
         }
     }
 
     if (argc - optind != 2) {
-        print_usage_and_exit(argv[0]);
+        usage(argv[0]);
+        exit(EXIT_FAILURE);
     }
 
     char* dot_filename = argv[optind];
