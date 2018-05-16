@@ -13,19 +13,19 @@ ANIM_CMD = './bin/dot2png -a -m fr samples/{0}.dot samples/{0}_frame.png'
 ANIM_COMPILE_CMD = 'convert -colorspace gray -loop 256 -delay 5 {1} -delay 300 {2} -layers optimize samples/thumbs/{0}_fr.gif'
 
 def gen_fr(name):
-    print(name + " fr")
+    print('Generating ' + name + ' fr...')
     cmd = FR_CMD.format(name)
     subprocess.run([cmd], shell=True)
     gen_thumb(name + '_fr')
 
 def gen_kk(name):
-    print(name + " kk")
+    print('Generating ' + name + ' kk...')
     cmd = KK_CMD.format(name)
     subprocess.run([cmd], shell=True)
     gen_thumb(name + '_kk')
 
 def gen_graphviz(name):
-    print(name + " graphviz")
+    print('Generating ' + name + ' graphviz...')
     cmd = GV_CMD.format(name)
     subprocess.run([cmd], shell=True)
     cmd = GV_RESIZE_CMD.format(name)
@@ -37,7 +37,7 @@ def gen_thumb(name):
     subprocess.run([cmd], shell=True)
 
 def gen_fr_anim(name):
-    print(name + " anim")
+    print('Generating ' + name + ' anim...')
     # generate all frames
     cmd = ANIM_CMD.format(name)
     subprocess.run([cmd], shell=True)
@@ -76,7 +76,7 @@ def main():
         name = file.name[:-len('.dot')]
 
         gen_fr(name)
-        if not "large" in name:
+        if not 'large' in name:
             gen_kk(name)
         gen_graphviz(name)
         gen_fr_anim(name)

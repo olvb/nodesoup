@@ -1,4 +1,4 @@
-## How it works
+## Force-directed graph layout
 
 Force-directed graph layout simulates forces to give motion to vertices and arrange them in a way that is visually pleasing and/or reveals structure. The [Fruchterman-Reingold algorithm][1] assigns a repelling force to vertices pair of the graph, effectively pushing appart vertices so they don't overlap, and a attraction force between each adjacent vertices, dragging closer connected vertices. Theses forces dim when the vertices respectively get further apart or closer, and a global temperature also serves as a simulated annealing, capping the maximum vertex displacement at each iteration. As the forces between each component and the temperature gradually diminish, the layout stabilizes.
 
@@ -15,6 +15,8 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 
 
 ## Results
+
+Click for full-scale image
 
 ### K6 graph
 
