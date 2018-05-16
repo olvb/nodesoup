@@ -16,7 +16,7 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 
 ## Results
 
-Click for full-scale image
+*Click for full-scale image*
 
 ### K6 graph
 
