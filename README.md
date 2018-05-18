@@ -9,7 +9,7 @@ Another method, the [Kamada Kawai algorithm][1], relies on the simulation of spr
 
 ## Implementation
 
-Our Fruchter-Reingold implementation starts by positioning all vertices on a circle as this appears to favor "unmangling" as compared to random positions. The radius how the circle is alway 1.0, and all further computations are performed with floating point values, without knowledge of the canvas dimensions. In consequence, contrary to the original Fruchterman-Reingold algorithm, no bound checking is performed, and the layout can spreed constraint-free. The final result is then scaled to fit into the canvas dimensions. One limitation of this approach is that it is not possible to have fancy circle-shaped or heart-shaped layouts.
+Our Fruchterman-Reingold implementation starts by positioning all vertices on a circle as this appears to favor "unmangling" as compared to random positions. The radius how the circle is alway 1.0, and all further computations are performed with floating point values, without knowledge of the canvas dimensions. In consequence, contrary to the original Fruchterman-Reingold algorithm, no bound checking is performed, and the layout can spreed constraint-free. The final result is then scaled to fit into the canvas dimensions. One limitation of this approach is that it is not possible to have fancy circle-shaped or heart-shaped layouts.
 
 A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its complexity makes it rather unsuitable for larger graphs.
 
