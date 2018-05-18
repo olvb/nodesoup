@@ -1,9 +1,8 @@
-#include <cmath>
-
 #include "nodesoup.hpp"
 #include "fruchterman_reingold.hpp"
 #include "kamada_kawai.hpp"
 #include "layout.hpp"
+#include <cmath>
 
 namespace nodesoup {
 using namespace std;
@@ -59,5 +58,4 @@ vector<double> size_radiuses(const adj_list_t& g, double base_radius, double k) 
     }
     return radiuses;
 }
-
 }

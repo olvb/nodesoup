@@ -1,8 +1,6 @@
 #pragma once
-
-#include <vector>
-
 #include "nodesoup.hpp"
+#include <vector>
 
 namespace nodesoup {
 // https://gist.github.com/terakun/b7eff90c889c1485898ec9256ca9f91d

@@ -7,7 +7,7 @@ DEMO_TARGETS = bin/dot2png
 CXX = g++
 LD = $(CXX)
 CXXFLAGS = -std=c++14 -Wall -Wextra -Wno-sign-compare -Iinclude/
-LDFLAGS = -lm
+LDFLAGS =
 
 ifeq ($(DEBUG), 1)
 CXXFLAGS += -g -DDEBUG

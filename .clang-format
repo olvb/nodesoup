@@ -2,5 +2,5 @@
 BasedOnStyle: WebKit
 BreakBeforeBraces: Attach
 MaxEmptyLinesToKeep: 1
-BreakConstructorInitializers: AfterColon
+BreakConstructorInitializersBeforeComma: true
 SpaceAfterCStyleCast: true

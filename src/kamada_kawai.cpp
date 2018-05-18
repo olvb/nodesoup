@@ -3,15 +3,16 @@
 #include <cmath>
 #include <limits>
 
-#include "kamada_kawai.hpp"
 #include "algebra.hpp"
+#include "kamada_kawai.hpp"
 
 namespace nodesoup {
 
 using namespace std;
 
-KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold) :
-    g_(g), energy_threshold_(energy_threshold) {
+KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold)
+    : g_(g)
+    , energy_threshold_(energy_threshold) {
     vector<vector<vertex_id_t>> distances = floyd_warshall_(g_);
 
     // find biggest distance

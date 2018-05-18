@@ -1,8 +1,7 @@
+#include "layout.hpp"
+#include "algebra.hpp"
 #include <cmath>
 #include <limits>
-
-#include "algebra.hpp"
-#include "layout.hpp"
 
 namespace nodesoup {
 using namespace std;

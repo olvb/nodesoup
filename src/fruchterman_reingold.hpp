@@ -1,9 +1,7 @@
 #pragma once
-
+#include "nodesoup.hpp"
 #include <utility>
 #include <vector>
-
-#include "nodesoup.hpp"
 
 namespace nodesoup {
 class FruchtermanReingold {

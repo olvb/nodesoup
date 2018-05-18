@@ -1,3 +1,4 @@
+#include "nodesoup.hpp"
 #include <algorithm>
 #include <cairo.h>
 #include <cassert>
@@ -9,10 +10,8 @@
 #include <sstream>
 #include <streambuf>
 #include <string>
-#include <vector>
 #include <unordered_map>
-
-#include "nodesoup.hpp"
+#include <vector>
 
 using namespace nodesoup;
 using namespace std;
@@ -138,7 +137,7 @@ void dot_to_png(
     vector<double> radiuses = size_radiuses(g);
 
     chrono::time_point<chrono::system_clock> start, end;
-
+    cout << "Laying out graph...\n";
     // Fruchterman-Reingold
     if (method == Method::fr) {
         iter_callback_t cback = nullptr;
@@ -155,7 +154,7 @@ void dot_to_png(
             }
             frame_filename = new char[frame_filename_format.size()];
 
-            cback = [&g, &radiuses, width, height, iters_count, frame_filename, &frame_filename_format] (vector<Point2D> positions, unsigned int iter) {
+            cback = [&g, &radiuses, width, height, iters_count, frame_filename, &frame_filename_format](vector<Point2D> positions, unsigned int iter) {
                 if (iter % 2 != 0 && iter != 0 && iter != iters_count - 1) {
                     return;
                 }
@@ -192,7 +191,7 @@ void dot_to_png(
     }
 
     unsigned int ms = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-    cout << "layout computed in " << ms << "ms" << endl;
+    cout << "Layout computed in " << ms << "ms\n";
 }
 
 void usage(string exec_name) {
@@ -202,7 +201,7 @@ void usage(string exec_name) {
     cerr << "  -w <width>\t\tCanvas width in pixels [default: 1024]\n";
     cerr << "  -h <height>\t\tCanvas height in pixels [default: 760]\n";
     cerr << "  -k <strength>\t\tStrength factor [default: 10 for fr, 300 for kk]\n";
-    cerr << "  -i <iterations>\tNumber of iterations for fr [default: 100]\n";
+    cerr << "  -i <nb_iterations>\tNumber of iterations for fr [default: 100]\n";
     cerr << "  -e <epsilon>\t\tEnergy threshold for kk [default: 1e-2]\n";
     cerr << "  -a\t\t\tOutput all intermediary frames for fr [default: false]\n";
 }
@@ -280,6 +279,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (argc - optind != 2) {
+        cerr << "Missing positional arguments\n";
         usage(argv[0]);
         exit(EXIT_FAILURE);
     }

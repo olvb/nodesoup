@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cmath>
 #include <functional>
 #include <vector>
 
@@ -61,5 +61,6 @@ std::vector<Point2D> kamada_kawai(
     double k = 300.0,
     double energy_threshold = 1e-2);
 
+/** Assigns diameters to vertices based on their degree */
 std::vector<double> size_radiuses(const adj_list_t& g, double base_radius = 4.0, double k = 300.0);
 }

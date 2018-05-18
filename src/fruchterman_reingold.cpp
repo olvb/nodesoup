@@ -1,16 +1,18 @@
+#include "fruchterman_reingold.hpp"
+#include "algebra.hpp"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 
-#include "fruchterman_reingold.hpp"
-#include "algebra.hpp"
-
 namespace nodesoup {
 using namespace std;
 
-FruchtermanReingold::FruchtermanReingold(const adj_list_t& g, double k) :
-    g_(g), k_(k), k_squared_(k * k),
-    temp_(10 * sqrt(g.size())), mvmts_(g_.size()) {}
+FruchtermanReingold::FruchtermanReingold(const adj_list_t& g, double k)
+    : g_(g)
+    , k_(k)
+    , k_squared_(k * k)
+    , temp_(10 * sqrt(g.size()))
+    , mvmts_(g_.size()) {}
 
 void FruchtermanReingold::operator()(vector<Point2D>& positions) {
     Vector2D zero = { 0.0, 0.0 };
