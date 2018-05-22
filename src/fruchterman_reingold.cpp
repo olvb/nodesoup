@@ -27,6 +27,7 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
 
             Vector2D delta = positions[v_id] - positions[other_id];
             double distance = delta.norm();
+            // > 1000.0: not worth computing
             if (distance > 1000.0) {
                 continue;
             }
