@@ -62,5 +62,5 @@ std::vector<Point2D> kamada_kawai(
     double energy_threshold = 1e-2);
 
 /** Assigns diameters to vertices based on their degree */
-std::vector<double> size_radiuses(const adj_list_t& g, double base_radius = 4.0, double k = 300.0);
+std::vector<double> size_radiuses(const adj_list_t& g, double min_radius = 4.0, double k = 300.0);
 }

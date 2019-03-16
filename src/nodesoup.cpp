@@ -2,6 +2,7 @@
 #include "fruchterman_reingold.hpp"
 #include "kamada_kawai.hpp"
 #include "layout.hpp"
+#include <algorithm>
 #include <cmath>
 
 namespace nodesoup {
@@ -49,11 +50,12 @@ vector<Point2D> kamada_kawai(
     return positions;
 }
 
-vector<double> size_radiuses(const adj_list_t& g, double base_radius, double k) {
+vector<double> size_radiuses(const adj_list_t& g, double min_radius, double k) {
     vector<double> radiuses;
     radiuses.reserve(g.size());
     for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
-        double radius = base_radius + log2(k * (double) g[v_id].size() / g.size());
+        double delta = log2(k * (double) g[v_id].size() / g.size());
+        double radius = min_radius + std::max(0.0, delta);
         radiuses.push_back(radius);
     }
     return radiuses;
