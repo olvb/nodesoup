@@ -4,3 +4,4 @@
 * use std::set in dot reader to support more vertex labels
 * write README with examples
 * include graph generator
+* BUG: handle vertices with identicaly coords (distance == 0) in FR

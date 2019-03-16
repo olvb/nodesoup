@@ -27,6 +27,8 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
 
             Vector2D delta = positions[v_id] - positions[other_id];
             double distance = delta.norm();
+            // TODO: handle distance == 0.0
+
             // > 1000.0: not worth computing
             if (distance > 1000.0) {
                 continue;
@@ -46,6 +48,10 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
 
             Vector2D delta = positions[v_id] - positions[adj_id];
             double distance = delta.norm();
+            if (distance == 0.0) {
+                continue;
+            }
+
             double attraction = distance * distance / k_;
 
             mvmts_[v_id] -= delta / distance * attraction;
