@@ -158,7 +158,7 @@ void dot_to_png(
             }
             frame_filename = new char[frame_filename_format.size()];
 
-            cback = [&g, &radiuses, width, height, iters_count, frame_filename, &frame_filename_format](vector<Point2D> positions, unsigned int iter) {
+            cback = [&g, &radiuses, width, height, iters_count, frame_filename, &frame_filename_format](vector<Point2D> positions, int iter) {
                 if (iter % 2 != 0 && iter != 0 && iter != iters_count - 1) {
                     return;
                 }
