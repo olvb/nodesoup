@@ -6,7 +6,8 @@
 #include <cmath>
 
 namespace nodesoup {
-using namespace std;
+
+using std::vector;
 
 vector<Point2D> fruchterman_reingold(
     const adj_list_t& g,

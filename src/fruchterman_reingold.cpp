@@ -5,7 +5,8 @@
 #include <iostream>
 
 namespace nodesoup {
-using namespace std;
+
+using std::vector;
 
 FruchtermanReingold::FruchtermanReingold(const adj_list_t& g, double k)
     : g_(g)
@@ -66,7 +67,7 @@ void FruchtermanReingold::operator()(vector<Point2D>& positions) {
         if (mvmt_norm < 1.0) {
             continue;
         }
-        double capped_mvmt_norm = min(mvmt_norm, temp_);
+        double capped_mvmt_norm = std::min(mvmt_norm, temp_);
         Vector2D capped_mvmt = mvmts_[v_id] / mvmt_norm * capped_mvmt_norm;
 
         positions[v_id] += capped_mvmt;

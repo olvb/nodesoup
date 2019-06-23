@@ -4,7 +4,8 @@
 #include <limits>
 
 namespace nodesoup {
-using namespace std;
+
+using std::vector;
 
 void circle(const adj_list_t& g, vector<Point2D>& positions) {
     double angle = 2.0 * M_PI / g.size();
@@ -16,10 +17,10 @@ void circle(const adj_list_t& g, vector<Point2D>& positions) {
 
 void center_and_scale(const adj_list_t& g, unsigned int width, unsigned int height, vector<Point2D>& positions) {
     // find current dimensions
-    double x_min = numeric_limits<double>::max();
-    double x_max = numeric_limits<double>::lowest();
-    double y_min = numeric_limits<double>::max();
-    double y_max = numeric_limits<double>::lowest();
+    double x_min = std::numeric_limits<double>::max();
+    double x_max = std::numeric_limits<double>::lowest();
+    double y_min = std::numeric_limits<double>::max();
+    double y_max = std::numeric_limits<double>::lowest();
 
     for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
         if (positions[v_id].x < x_min) {

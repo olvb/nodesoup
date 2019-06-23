@@ -8,7 +8,7 @@
 
 namespace nodesoup {
 
-using namespace std;
+using std::vector;
 
 KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold)
     : g_(g)
@@ -53,7 +53,7 @@ KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold)
 
 vector<vector<vertex_id_t>> KamadaKawai::floyd_warshall_(const adj_list_t& g) {
     // build adjacency matrix (infinity = no edge, 1 = edge)
-    unsigned int infinity = numeric_limits<unsigned int>::max() / 2;
+    unsigned int infinity = std::numeric_limits<unsigned int>::max() / 2;
     vector<vector<vertex_id_t>> distances(g.size(), vector<vertex_id_t>(g.size(), infinity));
 
     for (vertex_id_t v_id = 0; v_id < g.size(); v_id++) {
@@ -70,7 +70,7 @@ vector<vector<vertex_id_t>> KamadaKawai::floyd_warshall_(const adj_list_t& g) {
     for (vertex_id_t k = 0; k < g.size(); k++) {
         for (vertex_id_t i = 0; i < g.size(); i++) {
             for (vertex_id_t j = 0; j < g.size(); j++) {
-                distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
+                distances[i][j] = std::min(distances[i][j], distances[i][k] + distances[k][j]);
             }
         }
     }

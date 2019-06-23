@@ -14,7 +14,11 @@
 #include <vector>
 
 using namespace nodesoup;
-using namespace std;
+
+using std::string;
+using std::vector;
+using std::cout;
+using std::cerr;
 
 /** Read not-too-complicated dot files */
 adj_list_t read_from_dot(string filename) {
@@ -25,7 +29,7 @@ adj_list_t read_from_dot(string filename) {
     }
 
     adj_list_t g;
-    unordered_map<string, vertex_id_t> names;
+    std::unordered_map<string, vertex_id_t> names;
 
     auto name_to_vertex_id = [&g, &names](string name) -> vertex_id_t {
         if (name[name.size() - 1] == ';') {
@@ -136,7 +140,7 @@ void dot_to_png(
     vector<Point2D> positions;
     vector<double> radiuses = size_radiuses(g);
 
-    chrono::time_point<chrono::system_clock> start, end;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
     cout << "Laying out graph...\n";
     // Fruchterman-Reingold
     if (method == Method::fr) {
@@ -167,9 +171,9 @@ void dot_to_png(
             k = 15.0;
         }
 
-        start = chrono::system_clock::now();
+        start = std::chrono::system_clock::now();
         positions = fruchterman_reingold(g, width, height, iters_count, k, cback);
-        end = chrono::system_clock::now();
+        end = std::chrono::system_clock::now();
 
         if (animated) {
             delete[] frame_filename;
@@ -183,14 +187,14 @@ void dot_to_png(
             k = 300.0;
         }
 
-        start = chrono::system_clock::now();
+        start = std::chrono::system_clock::now();
         positions = kamada_kawai(g, width, height, k, energy_threshold);
-        end = chrono::system_clock::now();
+        end = std::chrono::system_clock::now();
 
         write_to_png(g, positions, radiuses, width, height, png_filename);
     }
 
-    unsigned int ms = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    unsigned int ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     cout << "Layout computed in " << ms << "ms\n";
 }
 
