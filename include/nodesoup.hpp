@@ -1,4 +1,7 @@
 #pragma once
+#if _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
 #include <cmath>
 #include <functional>
 #include <vector>

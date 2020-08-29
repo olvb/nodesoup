@@ -16,7 +16,7 @@ KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold)
     vector<vector<vertex_id_t>> distances = floyd_warshall_(g_);
 
     // find biggest distance
-    unsigned int biggest_distance = 0;
+    size_t biggest_distance = 0;
     for (vertex_id_t v_id = 0; v_id < g_.size(); v_id++) {
         for (vertex_id_t other_id = 0; other_id < g_.size(); other_id++) {
             if (distances[v_id][other_id] > biggest_distance) {
@@ -40,7 +40,7 @@ KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold)
                 spring.length = 0.0;
                 spring.strength = 0.0;
             } else {
-                unsigned int distance = distances[v_id][other_id];
+                size_t distance = distances[v_id][other_id];
                 spring.length = distance * length;
                 spring.strength = k / (distance * distance);
             }
