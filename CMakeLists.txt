@@ -36,8 +36,6 @@ install(
   DESTINATION include
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/nodesoup)
 
-install()
-
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   nodesoup-config-version.cmake
