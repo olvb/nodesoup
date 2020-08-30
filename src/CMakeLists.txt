@@ -13,7 +13,11 @@ set_target_properties(
   nodesoup PROPERTIES POSITION_INDEPENDENT_CODE ON
                       PUBLIC_HEADER ${nodesoup_SOURCE_DIR}/include/nodesoup.hpp)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES
-                                           "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(nodesoup PRIVATE -Wall -Wextra)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(nodesoup PRIVATE -Wall -Wextra)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_options(nodesoup PRIVATE /W4)
+  target_compile_definitions(nodesoup PUBLIC _USE_MATH_DEFINES)
 endif()
