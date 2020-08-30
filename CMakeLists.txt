@@ -53,6 +53,16 @@ export(
   NAMESPACE nodesoup::
   FILE nodesoup-targets.cmake)
 
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  set(CPACK_PACKAGE_VENDOR "olvb")
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+  set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+  set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+  set(CPACK_SOURCE_IGNORE_FILES /.clang-format /compile_commands.json /.git
+                                /dist /.*build.* /\\\\.DS_Store)
+  include(CPack)
+endif()
+
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR nodesoup_BUILD_DEMO)
    AND BUILD_DEMO)
   add_subdirectory(demo)
