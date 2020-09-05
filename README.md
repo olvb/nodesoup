@@ -2,16 +2,16 @@
 
 Force-directed graph layout simulates forces to give motion to vertices and arrange them in a way that is visually pleasing and/or reveals structure. The [Fruchterman-Reingold algorithm][1] assigns a repelling force to vertices pair of the graph, effectively pushing apart vertices so they don't overlap, and a attraction force between each adjacent vertices pair, thus dragging closer connected vertices. The forces attenuate when the vertices get respectively further apart or closer, and a global temperature also serves as a simulated annealing, capping the maximum vertex displacement at each iteration. As the forces between each component and the temperature gradually diminish, the layout stabilizes.
 
-Another method, the [Kamada Kawai algorithm][1], relies on the simulation of springs between each vertex, which strength is determined by the length of the shortest path between both vertices. The potential energy of each vertex, ie the sum of the energy of all its springs, is then computed. The goal being to reduce the global energy of the layout, each vertex is moved step-by-step until its potential energy is considered low-enough, using a Newton Raphson algorithm.
+Another method, the [Kamada Kawai algorithm][1], relies on the simulation of springs between each vertex, which strength is determined by the length of the shortest path between both vertices. The potential energy of each vertex, ie the sum of the energy of all its springs, is then computed. The goal being to reduce the global energy of the layout, each vertex is moved step-by-step until its potential energy is considered low-enough, using a Newton-Raphson algorithm.
 
 [1]: http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.13.8444&rep=rep1&type=pdf
 [2]: http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.387.7401&rep=rep1&type=pdf
 
 ## Implementation
 
-Our implementation of Fruchterman-Reingold starts by positioning all vertices on a circle as this appears to favor "unmangling" compared to random positions. The radius of the circle is alway 1.0, and all further computations are performed with floating point values, without knowledge of the canvas dimensions. In consequence, contrary to the original Fruchterman-Reingold algorithm, no bound checking is performed, and the layout can spreed constraint-free. The final result is then scaled to fit into the canvas dimensions.
+This implementation of Fruchterman-Reingold starts by positioning all vertices on a circle as this appears to favor "unmangling" compared to random positions. The radius of the circle is alway 1.0, and all further computations are performed with floating point values, without knowledge of the canvas dimensions. In consequence, contrary to the original Fruchterman-Reingold algorithm, no bound checking is performed, and the layout can spread constraint-free. The final result is then scaled to fit into the canvas dimensions.
 
-A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its complexity makes it rather unsuitable for larger graphs.
+A Kamada-Kawai algorithm is also provided, mostly for comparison purpose. Its complexity makes it rather unsuitable for larger graphs.
 
 
 ## Results
@@ -93,4 +93,4 @@ A Kamada Kawai algorithm is also provided, mostly for comparison purpose. Its co
 
 *GML file from [gephi](https://github.com/gephi/gephi/wiki/Datasets) based on dataset by M. E. J. Newman*
 
-It might take some twiddling of the *k* parameter (a constant used to compute attractive and repulsive forces between vertices), as well as of the number of iterations, in order to get a layout perfectly free of edge-crossing. A better solution could be to introduce a "fine-tuning" phase during which we slightly raise again the temperature (and possibly the *k* value?) so as to shake the layout a bit before cooling it down again.
+It might take some twiddling with the *k* parameter (a constant used to compute attractive and repulsive forces between vertices), as well as of the number of iterations, in order to get a layout perfectly free of edge-crossing. A better solution could be to introduce a "fine-tuning" phase during which we slightly raise again the temperature (and possibly the *k* value?) so as to shake the layout a bit before cooling it down again.
