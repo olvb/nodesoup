@@ -10,6 +10,7 @@ namespace nodesoup {
 
 using std::vector;
 
+
 KamadaKawai::KamadaKawai(const adj_list_t& g, double k, double energy_threshold)
     : g_(g)
     , energy_threshold_(energy_threshold) {
@@ -79,6 +80,7 @@ vector<vector<vertex_id_t>> KamadaKawai::floyd_warshall_(const adj_list_t& g) {
 }
 
 #define MAX_VERTEX_ITERS_COUNT 50
+#define MAX_STEADY_ENERGY_ITERS_COUNT 50
 
 /**
 Reduce the energy of the next vertex with most energy until all the vertices have
@@ -86,14 +88,25 @@ a energy below energy_threshold
 */
 void KamadaKawai::operator()(vector<Point2D>& positions) const {
     vertex_id_t v_id;
-    while (find_max_vertex_energy_(positions, v_id) > energy_threshold_) {
+    unsigned int steady_energy_count = 0;
+    double max_vertex_energy = find_max_vertex_energy_(positions, v_id);
+
+    while (max_vertex_energy > energy_threshold_ && steady_energy_count < MAX_STEADY_ENERGY_ITERS_COUNT) {
         // move vertex step by step until its energy goes below threshold
         // (apparently this is equivalent to the newton raphson method)
-        unsigned int count = 0;
+        unsigned int vertex_count = 0;
         do {
             positions[v_id] = compute_next_vertex_position_(v_id, positions);
-            count++;
-        } while (compute_vertex_energy_(v_id, positions) > energy_threshold_ && count < MAX_VERTEX_ITERS_COUNT);
+            vertex_count++;
+        } while (compute_vertex_energy_(v_id, positions) > energy_threshold_ && vertex_count < MAX_VERTEX_ITERS_COUNT);
+
+        double max_vertex_energy_prev = max_vertex_energy;
+        max_vertex_energy = find_max_vertex_energy_(positions, v_id);
+        if (std::abs(max_vertex_energy - max_vertex_energy_prev) < 1e-20) {
+            steady_energy_count++;
+        } else {
+            steady_energy_count = 0;
+        }
     }
 }
 
